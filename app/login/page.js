@@ -1,8 +1,13 @@
 'use client'
 
 import styles from "./page.module.css";
+import { useContext } from 'react'
+import ContextInstance from "@/utils/context/ContextInstance/ContextInstance"
 
 const Login = () => {
+
+  const { setUserId, setUserToken } = useContext(ContextInstance)
+
   const onSubmit = async (event) => {
     event.preventDefault()
  
@@ -30,8 +35,9 @@ const Login = () => {
  
     // Stock les informations d'identification
     const data = await response.json()
-    localStorage.setItem("token", data["token"]);
-    localStorage.setItem("userId", data["userId"]);
+
+    setUserId(data["userId"])
+    setUserToken(data["token"])
   }
  
   return (
