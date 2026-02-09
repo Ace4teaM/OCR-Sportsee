@@ -1,18 +1,16 @@
 :root {
-  --background: #ffffff;
+  --background: #F2F3FF;
   --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 html,
 body {
-  max-width: 100vw;
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100vw;
   overflow-x: hidden;
 }
 
@@ -35,8 +33,76 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+h2{
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: space-between;
+  max-width: 1140px;
+  min-width: 800px;
+  height: calc(100vh - 80px);
+  margin: 40px;
+  flex-grow: 1;
+}
+
+section.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  margin-top: 60px;
+}
+
+header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+footer {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.icon
+{
+  display: inline-block;
+  width: 21px;
+  height: 21px;
+}
+
+.star
+{
+  background-image: url("/ai.png");
+  background-position: center;
+  background-size: contain;
+}
+
+.button{
+  border-radius: 13px;
+  background-color: white;
+  border: 1px solid black;
+  padding: 6px;
+  margin: 0 6px 0 6px;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+  aspect-ratio: 1 / 1;
+  height: 33px;
+  cursor: pointer;
 }

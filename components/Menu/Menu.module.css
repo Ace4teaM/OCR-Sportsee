@@ -1,0 +1,29 @@
+
+
+.menu
+{
+  background-color: #FFFFFF;
+  color: black;
+  border-radius: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+  padding-left: 40px;
+  padding-right: 40px;
+  font-size: 14px;
+}
+
+.menu > li{
+  display: inline-block;
+  margin: 0 20px 0 0;
+}
+.menu img {
+  vertical-align: middle;
+}
+.separator {
+  display: inline-block;
+  border-left: 1px solid #0B23F4;
+  padding-left: 10px;
+}

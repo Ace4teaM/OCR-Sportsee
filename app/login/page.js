@@ -41,13 +41,26 @@ const Login = () => {
   }
  
   return (
-    <form onSubmit={onSubmit}>
-      <label htmlFor="username">Nom d'utilisateur</label>
-      <input type="text" name="username" />
-      <label htmlFor="password">Mot de passe</label>
-      <input type="password" name="password" />
-      <button type="submit">Submit</button>
-    </form>
+    <div className={styles.container}>
+      <div className={styles.center}>
+        <div className={styles.form}>
+          <h2>Transformez<br></br>vos stats en résultats</h2>
+          <p>Se connecter</p>
+          <form onSubmit={onSubmit}>
+            <label htmlFor="username">Adresse email</label>
+            <input type="email" name="email" />
+            <label htmlFor="password">Mot de passe</label>
+            <input type="password" name="password" />
+            <button className={styles.button} type="submit">Se connecter</button>
+          </form>
+          <p>Mot de passe oublié ?</p>
+        </div>
+      </div>
+      <div className={styles.panel}>
+          <img className={styles.background} src="/background.png" alt="background"></img>
+          <div className={styles.note}>Analysez vos performances en un clin d’œil, suivez vos progrès et atteignez vos objectifs.</div>
+      </div>
+    </div>
   )
 }
 export default Login

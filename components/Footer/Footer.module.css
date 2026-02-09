@@ -1,0 +1,26 @@
+.footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  position: absolute;
+  bottom: 0;
+  left:0;
+  width: 100vw;
+  background-color: #FFFFFF;
+  padding-left: 80px;
+  padding-right: 80px;
+  font-size: 14px;
+}
+
+
+.menu{
+  line-height: 40px;
+}
+.menu > li{
+  display: inline-block;
+  margin: 0 20px 0 0;
+}
+.menu img {
+  vertical-align: middle;
+}
