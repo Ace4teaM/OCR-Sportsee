@@ -50,11 +50,30 @@
 }
 
 .button{
+    position: relative;
     border-radius: 10px;
     background-color: blue;
-    padding: 20px;
+    padding: 16px 36px 16px 36px;
     color: #FFFFFF;
     border: none;
+}
+
+.buttonAnim::after{
+  position: absolute;
+  content: "";
+  border-radius: 10px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: white;
+  opacity: 0;
+  transition-property: opacity;
+  transition-duration: 500ms;
+}
+
+.buttonAnim:hover::after{
+  opacity: 0.3;
 }
 
 .avatar{

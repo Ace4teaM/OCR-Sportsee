@@ -9,8 +9,8 @@ export default function DashBoard() {
   return (
     <div className={styles.container}>
       <div className={styles.banner}>
-          <p><span className="icon star"></span>Posez vos questions sur votre programme, vos performances ou vos objectifs.</p>
-          <span className={styles.button}>Lancer une conversation</span>
+          <div><span className="icon star"></span>Posez vos questions sur votre programme, vos performances ou vos objectifs.</div>
+          <span className={`${styles.button} ${styles.buttonAnim}`}>Lancer une conversation</span>
       </div>
       <div className={styles.profil}>
         <div className={styles.photo}>

@@ -84,6 +84,8 @@ footer {
   display: inline-block;
   width: 21px;
   height: 21px;
+  margin-right: 10px;
+  vertical-align: middle;
 }
 
 .star
@@ -94,6 +96,7 @@ footer {
 }
 
 .button{
+  position: relative;
   border-radius: 13px;
   background-color: white;
   border: 1px solid black;
