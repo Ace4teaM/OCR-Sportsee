@@ -42,6 +42,24 @@
     align-items: center;
 }
 
+.avatar{
+    overflow: hidden;
+    height: 100px;
+    width: 100px;
+    border-radius: 10px;
+    margin: 20px;
+}
+
+.avatar img{
+    height: 100%;
+    transform-origin: 85% 57%;
+    transform: scale(1.6);
+}
+
+.photo h2{
+    margin-top: 0;
+}
+
 .infos{
     display: flex;
     flex-direction: column;
@@ -52,7 +70,8 @@
 .infos h2{
     align-self: stretch;
     padding-bottom: 20px;
-    margin-bottom: 20px;
+    margin-top: 20px;
+    margin-bottom: 30px;
     border-bottom: 1px solid lightgray;
 }
 

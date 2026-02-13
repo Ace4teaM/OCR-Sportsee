@@ -7,7 +7,9 @@ export default function Profil() {
     <div className={styles.container}>
       <div className={styles.profil}>
         <div className={styles.photo}>
-          <img src='/profil.png'></img>
+          <div className={styles.avatar}>
+            <img src='/profil.jpg'></img>
+          </div>
           <div>
             <h2>Clara Dupont</h2>
             <p>Membre depuis le 14 juin 2023</p>
