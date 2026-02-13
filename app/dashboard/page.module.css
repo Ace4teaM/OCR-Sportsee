@@ -45,6 +45,9 @@
     align-items: center;
 }
 
+.photo h2{
+    margin-top: 0;
+}
 
 .button{
     border-radius: 10px;
@@ -52,6 +55,38 @@
     padding: 20px;
     color: #FFFFFF;
     border: none;
+}
+
+.avatar{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.avatar_content{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    width: 100px;
+    height: 100px;
+    margin: 50px;
+}
+
+.avatar_content img{
+    transition-property: transform;
+    transition-duration: 500ms;
+    transform-origin: 45% 57%;
+    transform: scale(1.6);
+    object-fit: cover;
+    flex-basis: 1;
+    height: 100%;
+}
+
+.avatar_content img:hover{
+    transform: scale(2.5);
 }
 
 .items{

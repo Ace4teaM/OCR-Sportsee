@@ -14,7 +14,11 @@ export default function DashBoard() {
       </div>
       <div className={styles.profil}>
         <div className={styles.photo}>
-          <img src='/profil.png'></img>
+          <div className={styles.avatar}>
+            <div className={styles.avatar_content}>
+              <img src='/profil.jpg'></img>
+            </div>
+          </div>
           <div>
             <h2>Clara Dupont</h2>
             <p>Membre depuis le 14 juin 2023</p>
