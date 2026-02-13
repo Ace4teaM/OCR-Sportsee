@@ -4,6 +4,7 @@ import ContextProvider from "@/utils/context/ContextProvider/ContextProvider"
 import Logo from "@/components/Logo/Logo";
 import Menu from "@/components/Menu/Menu";
 import Footer from "@/components/Footer/Footer";
+import LoginDialog from "@/components/LoginDialog/LoginDialog";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +39,7 @@ export default function RootLayout({ children }) {
             <section className="content">
             {children}
             </section>
+            <LoginDialog></LoginDialog>
           </main>
           <Footer></Footer>
         </ContextProvider>

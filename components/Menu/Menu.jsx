@@ -10,6 +10,12 @@ const Menu = () => {
     console.log(`Menu mounted`)
   }, [])
 
+  const onLogin = () =>{
+    var dialog = document.getElementById("loginDialog");
+    console.log(dialog);
+    dialog.showModal();
+  }
+
   return (
     <div>
         <ul className={styles.menu}>
@@ -26,7 +32,7 @@ const Menu = () => {
             <span className={styles.separator}>&nbsp;</span>
           </li>
           <li className={styles.button}>
-            <Link href="/login">Se connecter</Link>
+            <Link href="#" onClick={onLogin}>Se connecter</Link>
           </li>
         </ul>
     </div>
