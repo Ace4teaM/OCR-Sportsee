@@ -19,18 +19,24 @@ const ContextProvider = ({ children }) => {
     // Ajustement premier rendu uniquement
     setUserToken(localStorage.getItem("token"))
     setUserId(localStorage.getItem("userId"))
-    setLogged(localStorage.getItem("token"))
+    setLogged(localStorage.getItem("token") != null)
     setIsReady(true)
   }, [])
 
   useEffect(()=>{
     if (!didInit.current) return
-    localStorage.setItem("token", userToken);
+    if(userToken == null)
+      localStorage.removeItem("token");
+    else
+      localStorage.setItem("token", userToken);
   }, [userToken])
 
   useEffect(()=>{
     if (!didInit.current) return
-    localStorage.setItem("userId", userId);
+    if(userToken == null)
+      localStorage.removeItem("userId");
+    else
+      localStorage.setItem("userId", userId);
   }, [userId])
 
   return (

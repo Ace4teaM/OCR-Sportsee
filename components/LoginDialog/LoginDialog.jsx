@@ -53,13 +53,14 @@ const LoginDialog = () => {
 
     const dlg = document.getElementById("loginDialog");
     dlg.close();
+
+    window.location.reload()
   }
  
   const isInDialogRef = useRef(false)
 
   const handleMouseUp = (e) => {
     if (isInDialogRef.current) {
-      console.log("Sélection en cours")
       return
     }
 

@@ -6,7 +6,7 @@ import Link from 'next/link'
 import ContextInstance from "@/utils/context/ContextInstance/ContextInstance"
 
 const Menu = () => {
-  const { logged } = useContext(ContextInstance)
+  const { logged, setLogged } = useContext(ContextInstance)
 
   useEffect(() => {
     console.log(`Menu mounted`)
@@ -20,6 +20,7 @@ const Menu = () => {
   const onUnlog = () =>{
     localStorage.removeItem("token")
     localStorage.removeItem("userId")
+    setLogged(false)
     window.location = "/"
   }
 
