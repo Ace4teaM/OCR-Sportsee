@@ -1,6 +1,6 @@
 'use client'
 
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useRef } from 'react';
 import styles from './LoginDialog.module.css'
 import ContextInstance from "@/utils/context/ContextInstance/ContextInstance"
 import Logo from "@/components/Logo/Logo";
@@ -55,7 +55,19 @@ const LoginDialog = () => {
     dlg.close();
   }
  
-  const onClickDialog = (e) => {
+  const isInDialogRef = useRef(false)
+
+  const handleMouseUp = (e) => {
+    if (isInDialogRef.current) {
+      console.log("Sélection en cours")
+      return
+    }
+
+    const dlg = document.getElementById("loginDialog");
+    dlg.close();
+  }
+
+  const handleMouseDown = (e) => {
     const dlg = document.getElementById("loginDialog");
     const rect = dlg.getBoundingClientRect();
 
@@ -65,13 +77,11 @@ const LoginDialog = () => {
       rect.left <= e.clientX &&
       e.clientX <= rect.right;
 
-    if (!clickedInDialog) {
-      dlg.close();
-    }
+    isInDialogRef.current = clickedInDialog;
   }
 
   return (
-    <dialog id="loginDialog" className={styles.loginDialog} onClick={onClickDialog}>
+    <dialog id="loginDialog" className={styles.loginDialog} onMouseUp={handleMouseUp} onMouseDown={handleMouseDown}>
       <div className={styles.container}>
         <div className={styles.center}>
           <div className={styles.logo}>
