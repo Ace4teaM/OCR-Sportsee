@@ -46,7 +46,7 @@ const CardioChart = ({ initialDate, ...rest }) => {
 
   // useCallback est nécessaire pour éviter les re-render en chaine de DateSelector (et indirectement onDateChange)
   const onDateChange = useCallback((beginDate, endDate) => {
-    const ajustedUrl = `http://localhost:8000/api/user-activity?startWeek=${formatDateISO(beginDate)}&endWeek=${formatDateISO(endDate)}`
+    const ajustedUrl = `user-activity?startWeek=${formatDateISO(beginDate)}&endWeek=${formatDateISO(endDate)}`
     setErrorMessage(null)
     setReady(false)
     setFirstDate(beginDate)
@@ -89,7 +89,7 @@ const CardioChart = ({ initialDate, ...rest }) => {
 
       totalAverage += data[i].heartRate.average
     }
-    
+
     setMoyenne(totalAverage / data.length)
     setChartData(ajustedData)
   }, [ready])

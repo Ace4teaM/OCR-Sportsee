@@ -11,7 +11,7 @@ import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import {  formatDate } from "@/utils/functions/format.js"
 
 export default function DashBoard() {
-  const { data, isLoading, error } = useFetch("http://localhost:8000/api/user-info")
+  const { data, isLoading, error } = useFetch("user-info")
   const [ready, setReady] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
 

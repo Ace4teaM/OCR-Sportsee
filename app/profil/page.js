@@ -8,7 +8,7 @@ import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import { formatHeight, formatDate, formatGenre, hour, min } from "@/utils/functions/format.js"
 
 export default function Profil() {
-  const { data, isLoading, error } = useFetch("http://localhost:8000/api/user-info")
+  const { data, isLoading, error } = useFetch("user-info")
   const [ready, setReady] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
 

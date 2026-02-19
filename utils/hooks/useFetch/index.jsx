@@ -14,7 +14,7 @@ export function useFetch(url) {
         if (!url) return
         async function fetchData() {
             try {
-                const response = await fetch(url, {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/${url}`, {
                     method: "GET", // ou POST, PUT...
                     headers: {
                         "Authorization": `Bearer ${userToken}`
