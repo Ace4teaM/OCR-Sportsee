@@ -1,12 +1,37 @@
-import Image from "next/image";
+'use client'
+
 import styles from "./page.module.css";
-import Link from "next/link";
+import { useFetch } from '@/utils/hooks/useFetch'
+import { useState, useEffect } from 'react';
+import LoadingIcon from "@/components/LoadingIcon/LoadingIcon";
 import CardioChart from "@/components/CardioChart/CardioChart";
 import DistanceChart from "@/components/DistanceChart/DistanceChart";
 import CoursesChart from "@/components/CoursesChart/CoursesChart";
+import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
+import {  formatDate } from "@/utils/functions/format.js"
 
 export default function DashBoard() {
+  const { data, isLoading, error } = useFetch("http://localhost:8000/api/user-info")
+  const [ready, setReady] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
+
+  useEffect(()=>{
+        if(isLoading == false)
+        {
+          if(error == true)
+          {
+            const message = (data.message ?? data.toString())
+            console.log("error", message)
+            setErrorMessage(message)
+            return;
+          }
+          
+          setReady(true)
+        }
+  }, [isLoading])
+
   return (
+    !ready ? (isLoading == true) ? <LoadingIcon></LoadingIcon> : <ErrorMessage>{errorMessage}</ErrorMessage>:
     <div className={styles.container}>
       <div className={styles.banner}>
           <div><span className="icon star"></span>Posez vos questions sur votre programme, vos performances ou vos objectifs.</div>
@@ -16,17 +41,17 @@ export default function DashBoard() {
         <div className={styles.photo}>
           <div className={styles.avatar}>
             <div className={styles.avatar_content}>
-              <img src='/profil.jpg'></img>
+              <img src={`${data.profile.profilePicture}`}></img>
             </div>
           </div>
           <div>
-            <h2>Clara Dupont</h2>
-            <p>Membre depuis le 14 juin 2023</p>
+            <h2>{data.profile.firstName} {data.profile.lastName}</h2>
+            <p>Membre depuis le {formatDate(data.profile.createdAt)}</p>
           </div>
         </div>
         <div className={styles.infos}>
           <p>Distance totale parcourue</p>
-          <span className={styles.button}>312 km</span>
+          <span className={`${styles.button} ${styles.buttonAnim}`}><img src="/goal.png"></img>{data.statistics.totalDistance} km</span>
         </div>
       </div>
       <div className={styles.stats}>

@@ -1,10 +1,12 @@
 'use client'
 
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import styles from './Menu.module.css'
 import Link from 'next/link'
+import ContextInstance from "@/utils/context/ContextInstance/ContextInstance"
 
 const Menu = () => {
+  const { logged } = useContext(ContextInstance)
 
   useEffect(() => {
     console.log(`Menu mounted`)
@@ -12,8 +14,13 @@ const Menu = () => {
 
   const onLogin = () =>{
     var dialog = document.getElementById("loginDialog");
-    console.log(dialog);
     dialog.showModal();
+  }
+
+  const onUnlog = () =>{
+    localStorage.removeItem("token")
+    localStorage.removeItem("userId")
+    window.location = "/"
   }
 
   return (
@@ -32,7 +39,7 @@ const Menu = () => {
             <span className={styles.separator}>&nbsp;</span>
           </li>
           <li className={styles.button}>
-            <Link href="#" onClick={onLogin}>Se connecter</Link>
+            {!logged ? <Link href="#" onClick={onLogin}>Se connecter</Link> : <Link href="#" onClick={onUnlog}>Se déconnecter</Link>}
           </li>
         </ul>
     </div>

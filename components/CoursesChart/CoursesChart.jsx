@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { PieChart, Pie, Sector, LabelList } from 'recharts';
 import { RechartsDevtools } from '@recharts/devtools';
 import styles from './CoursesChart.module.css'
@@ -11,11 +11,7 @@ export const data = [
 ];
 
 
-const CoursesChart = () => {
-
-  useEffect(() => {
-    console.log(`CoursesChart mounted`)
-  }, [])
+const CoursesChart = ({ initialDate, ...rest }) => {
 
   const ShapeStyle = (props) => (
     <Sector 

@@ -1,20 +1,26 @@
 'use client'
 
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import styles from './LoginDialog.module.css'
 import ContextInstance from "@/utils/context/ContextInstance/ContextInstance"
 import Logo from "@/components/Logo/Logo";
+import { useRouter } from "next/navigation"
 
 const LoginDialog = () => {
+  const router = useRouter()
 
   useEffect(() => {
     console.log(`LoginDialog mounted`)
   }, [])
 
-  const { setUserId, setUserToken } = useContext(ContextInstance)
+  const { setUserId, setUserToken, setLogged } = useContext(ContextInstance)
+  const [ loginFailed, setLoginFailed ] = useState(false)
 
   const onSubmit = async (event) => {
     event.preventDefault()
+    
+    setLogged(false)
+    setLoginFailed(false)
  
     const formData = new FormData(event.target)
     
@@ -34,7 +40,7 @@ const LoginDialog = () => {
 
     if(response.status != 200)
     {
-      console.log(response);
+      setLoginFailed(true)
       return;
     }
  
@@ -43,8 +49,10 @@ const LoginDialog = () => {
 
     setUserId(data["userId"])
     setUserToken(data["token"])
+    setLogged(true)
 
-    window.location.reload()
+    const dlg = document.getElementById("loginDialog");
+    dlg.close();
   }
  
   const onClickDialog = (e) => {
@@ -71,10 +79,11 @@ const LoginDialog = () => {
           </div>
           <div className={styles.form}>
             <h2>Transformez<br></br>vos stats en résultats</h2>
+            {loginFailed && <>La connexion a échouée</>}
             <p>Se connecter</p>
             <form onSubmit={onSubmit}>
-              <label htmlFor="username">Adresse email</label>
-              <input type="email" name="email" />
+              <label htmlFor="username">Nom d'utilisateur</label>
+              <input type="text" name="username" />
               <label htmlFor="password">Mot de passe</label>
               <input type="password" name="password" />
               <button className={styles.button} type="submit">Se connecter</button>

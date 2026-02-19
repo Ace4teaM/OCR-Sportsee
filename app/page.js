@@ -1,11 +1,10 @@
-import Link from "next/link";
 import styles from "./page.module.css";
-import DashBoard from "./dashboard/page";
+import Accueil from "@/components/Accueil/Accueil";
 
 export default function Home() {
   return (
     <div className={styles.page}>
-      <DashBoard></DashBoard>
+      <Accueil></Accueil>
     </div>
   );
 }

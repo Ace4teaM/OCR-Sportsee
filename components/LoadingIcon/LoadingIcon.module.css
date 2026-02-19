@@ -1,0 +1,77 @@
+
+.content{
+  container-type: size;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 80px;
+  height: 80px;
+}
+.load {
+  position: relative;
+  container-type: size;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: circles 3000ms linear infinite;
+}
+.point {
+  position: absolute;
+  background: radial-gradient(to center, #5864F1, #F79280);
+  background-color: #5864F1;
+  height: 20cqh;
+  border-radius: 100%;
+  aspect-ratio: 1;
+  transform-origin: 50% 50%;
+  transform: translate(0px, 0px);
+  transition: transform 5s reverse;  
+  --part: calc((360deg / 5))
+}
+
+.point1 {
+  transform: rotate(calc(var(--part) * 1)) translateX(calc(50cqh - 20cqh / 2));
+}
+.point2 {
+  transform: rotate(calc(var(--part) * 2)) translateX(calc(50cqh - 20cqh / 2));
+}
+.point3 {
+  transform: rotate(calc(var(--part) * 3)) translateX(calc(50cqh - 20cqh / 2));
+}
+.point4 {
+  transform: rotate(calc(var(--part) * 4)) translateX(calc(50cqh - 20cqh / 2));
+}
+.point5 {
+  transform: rotate(calc(var(--part) * 5)) translateX(calc(50cqh - 20cqh / 2));
+}
+
+@keyframes circles {
+    0% {
+      transform: rotate(0);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+}
+
+
+.text {
+  position: absolute;
+  font-size: 20cqw;
+  animation: text 3000ms linear infinite;
+}
+
+@keyframes text {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.5);
+    }
+    100% {
+      transform: scale(1);
+    }
+}
