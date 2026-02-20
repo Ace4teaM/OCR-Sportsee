@@ -9,15 +9,14 @@ import DateSelector from '@/components/DateSelector/DateSelector'
 import Placeholder from '@/components/Placeholder/Placeholder'
 import {formatDateISO} from '@/utils/functions/format'
 
-// applique une fréquence normal au repos (évite de fausser le graphique si aucune donnée de dispo)
 const emptyDataModel = () => [
-  { day: "Lun", min: 60, max: 100, average: 80 },
-  { day: "Mar", min: 60, max: 100, average: 80 },
-  { day: "Mer", min: 60, max: 100, average: 80 },
-  { day: "Jeu", min: 60, max: 100, average: 80 },
-  { day: "Ven", min: 60, max: 100, average: 80 },
-  { day: "Sam", min: 60, max: 100, average: 80 },
-  { day: "Dim", min: 60, max: 100, average: 80 },
+  { day: "Lun", min: NaN, max: NaN, average: NaN },
+  { day: "Mar", min: NaN, max: NaN, average: NaN },
+  { day: "Mer", min: NaN, max: NaN, average: NaN },
+  { day: "Jeu", min: NaN, max: NaN, average: NaN },
+  { day: "Ven", min: NaN, max: NaN, average: NaN },
+  { day: "Sam", min: NaN, max: NaN, average: NaN },
+  { day: "Dim", min: NaN, max: NaN, average: NaN },
 ];
 
 const CardioChart = ({ initialDate, ...rest }) => {
@@ -92,7 +91,7 @@ const CardioChart = ({ initialDate, ...rest }) => {
     }
 
     setMoyenne(totalAverage / data.length)
-    setChartData(ajustedData)
+    setChartData(ajustedData.filter(item => isNaN(item.average) == false))
   }, [ready])
 
   return (
