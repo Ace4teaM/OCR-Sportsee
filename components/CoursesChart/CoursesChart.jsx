@@ -28,7 +28,7 @@ const CoursesChart = ({ initialDate, ...rest }) => {
       <div className={styles.subtitle}>Courses hebdomadaire réalisées</div>
       <div className={styles.content}>
         <PieChart responsive
-          style={{ height: '300px', aspectRatio: 1.4, padding: 20 }}
+          style={{ width: '100%', height: '100%', aspectRatio: 1.4, padding: 20 }}
           margin={{
             top: 30,
             right: 0,

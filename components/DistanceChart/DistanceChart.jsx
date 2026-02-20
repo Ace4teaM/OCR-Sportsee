@@ -92,25 +92,25 @@ const DistanceChart = ({ initialDate, ...rest }) => {
       <div className={styles.subtitle}>Total des kilomètres 4 dernières semaines</div>
       <Placeholder ready={ready} replacement={isLoading ? "Chargement des données..." : errorMessage ?? "Aucune donnée disponible"}>
         <BarChart
-              style={{ width: '100%', aspectRatio: 1.618 }}
-              responsive
-              data={chartData}
-              margin={{
-                top: 5,
-                right: 0,
-                left: 0,
-                bottom: 5,
-              }}
-            >
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="semaine" />
-            <YAxis width="auto" />
-            <Tooltip />
-            <Legend align="left" />
-            <Bar barSize={14} name="Km" legendType="circle" dataKey="km" fill="#8884d8" activeBar={{ fill: 'pink', stroke: 'blue' }} radius={[10, 10, 0, 0]} />
-            <RechartsDevtools />
-          </BarChart>
-        </Placeholder>
+            style={{ width: '100%', height: '100%', aspectRatio: 1.618 }}
+            responsive
+            data={chartData}
+            margin={{
+              top: 5,
+              right: 0,
+              left: 0,
+              bottom: 5,
+            }}
+          >
+          <CartesianGrid strokeDasharray="3 3" vertical={false} />
+          <XAxis dataKey="semaine" />
+          <YAxis width="auto" />
+          <Tooltip />
+          <Legend align="left" />
+          <Bar barSize={14} name="Km" legendType="circle" dataKey="km" fill="#8884d8" activeBar={{ fill: 'pink', stroke: 'blue' }} radius={[10, 10, 0, 0]} />
+          <RechartsDevtools />
+        </BarChart>
+      </Placeholder>
     </>
   )
 }

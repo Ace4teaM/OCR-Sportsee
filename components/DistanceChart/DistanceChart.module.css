@@ -18,3 +18,8 @@
   flex-direction: row;
   margin-bottom: 10px;
 }
+
+
+.chart{
+    height: 100%;
+}

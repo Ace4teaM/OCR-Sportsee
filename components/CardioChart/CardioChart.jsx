@@ -103,7 +103,7 @@ const CardioChart = ({ initialDate, ...rest }) => {
       <div className={styles.subtitle}>Fréquence cardiaque moyenne</div>
       <Placeholder ready={ready} replacement={isLoading ? "Chargement des données..." : errorMessage ?? "Aucune donnée disponible"}>
         <ComposedChart
-          style={{ width: '100%', aspectRatio: 1.618 }}
+          style={{ width: '100%', height: '100%', aspectRatio: 1.618 }}
           responsive
           data={chartData}
           margin={{

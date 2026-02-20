@@ -115,11 +115,14 @@
 
 .items{
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 0.7fr 1fr;
     gap: 20px;
 }
 
 .box{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
     background-color: #FFFFFF;
     padding: 20px;
     box-sizing: border-box;
