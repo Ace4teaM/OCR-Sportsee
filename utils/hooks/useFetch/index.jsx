@@ -23,7 +23,6 @@ export function useFetch(url) {
                 const data = await response.json()
                 if(response.status != 200)
                     setError(true)
-                console.log("end loading", url, data)
                 setData(data)
             } catch (err) {
                 console.log(err)

@@ -12,13 +12,15 @@ import Placeholder from '@/components/Placeholder/Placeholder'
 import { formatDate, formatDateShort, formatDateISO } from "@/utils/functions/format.js"
 
 export default function DashBoard() {
-  const { data, isLoading, error } = useFetch("user-info")
-  const [ url, setUrl ] = useState(null)
-  const { data: dataWeek, isLoading:isLoadingWeek, error:errorWeek } = useFetch(url)
-  const [readyWeek, setReadyWeek] = useState(false)
-  const [errorWeekMessage, setErrorWeekMessage] = useState("")
+  // infos
+  const info = useFetch("user-info")
   const [ready, setReady] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
+  // stats
+  const [ url, setUrl ] = useState(null)
+  const week = useFetch(url)
+  const [readyWeek, setReadyWeek] = useState(false)
+  const [errorWeekMessage, setErrorWeekMessage] = useState("")
   const [beginDate, setBeginDate] = useState(null)
   const [endDate, setEndDate] = useState(null)
   const [totalActivity, setTotalActivity] = useState(0)
@@ -52,18 +54,18 @@ export default function DashBoard() {
   */
 
   useEffect(()=>{
-        if(isLoading == false)
+        if(info.isLoading == false)
         {
-          if(error == true)
+          if(info.error == true)
           {
-            const message = (data.message ?? data.toString())
+            const message = (info.data.message ?? info.data.toString())
             setErrorMessage(message)
             return;
           }
           
           setReady(true)
         }
-  }, [isLoading])
+  }, [info.isLoading])
 
   /*
   Week DATA
@@ -79,24 +81,24 @@ export default function DashBoard() {
   }, [ready])
 
   useEffect(()=>{
-    if(isLoadingWeek == false)
+    if(week.isLoading == false)
     {
-      if(errorWeek == true)
+      if(week.error == true)
       {
-        const message = (dataWeek.message ?? dataWeek.toString())
+        const message = (week.data.message ?? week.data.toString())
         setErrorWeekMessage(message)
         return;
       }
       
       setReadyWeek(true)
     }
-  }, [isLoadingWeek])
+  }, [week.isLoading])
 
   useEffect(()=>{
     if(readyWeek == false)
       return
   
-    if(data.length == 0)
+    if(week.data.length == 0)
     {
       setErrorWeekMessage("Aucune donnée disponible")
       setReadyWeek(false)
@@ -106,9 +108,9 @@ export default function DashBoard() {
     let activity = 0;
     let distance = 0;
 
-    for (let i = 0; i < dataWeek.length; i++) {
-      activity += parseFloat(dataWeek[i].duration)
-      distance += parseFloat(dataWeek[i].distance)
+    for (let i = 0; i < week.data.length; i++) {
+      activity += parseFloat(week.data[i].duration)
+      distance += parseFloat(week.data[i].distance)
     }
 
     setTotalActivity(activity)
@@ -116,7 +118,7 @@ export default function DashBoard() {
   }, [readyWeek])
 
   return (
-    !ready ? (isLoading == true) ? <LoadingIcon></LoadingIcon> : <ErrorMessage>{errorMessage}</ErrorMessage>:
+    !ready ? (info.isLoading == true) ? <LoadingIcon></LoadingIcon> : <ErrorMessage>{errorMessage}</ErrorMessage>:
     <div className={styles.container}>
       <div className={styles.banner}>
           <div><span className="icon star"></span>Posez vos questions sur votre programme, vos performances ou vos objectifs.</div>
@@ -126,17 +128,17 @@ export default function DashBoard() {
         <div className={styles.photo}>
           <div className={styles.avatar}>
             <div className={styles.avatar_content}>
-              <img src={`${data.profile.profilePicture}`}></img>
+              <img src={`${info.data.profile.profilePicture}`}></img>
             </div>
           </div>
           <div>
-            <h2>{data.profile.firstName} {data.profile.lastName}</h2>
-            <p>Membre depuis le {formatDate(data.profile.createdAt)}</p>
+            <h2>{info.data.profile.firstName} {info.data.profile.lastName}</h2>
+            <p>Membre depuis le {formatDate(info.data.profile.createdAt)}</p>
           </div>
         </div>
         <div className={styles.infos}>
           <p>Distance totale parcourue</p>
-          <span className={`${styles.button} ${styles.buttonAnim}`}><img src="/goal.png"></img>{data.statistics.totalDistance} km</span>
+          <span className={`${styles.button} ${styles.buttonAnim}`}><img src="/goal.png"></img>{info.data.statistics.totalDistance} km</span>
         </div>
       </div>
       <div className={styles.stats}>
