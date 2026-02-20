@@ -2,18 +2,54 @@
 
 import styles from "./page.module.css";
 import { useFetch } from '@/utils/hooks/useFetch'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import LoadingIcon from "@/components/LoadingIcon/LoadingIcon";
 import CardioChart from "@/components/CardioChart/CardioChart";
 import DistanceChart from "@/components/DistanceChart/DistanceChart";
 import CoursesChart from "@/components/CoursesChart/CoursesChart";
 import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
-import {  formatDate } from "@/utils/functions/format.js"
+import Placeholder from '@/components/Placeholder/Placeholder'
+import { formatDate, formatDateShort, formatDateISO } from "@/utils/functions/format.js"
 
 export default function DashBoard() {
   const { data, isLoading, error } = useFetch("user-info")
+  const [ url, setUrl ] = useState(null)
+  const { data: dataWeek, isLoading:isLoadingWeek, error:errorWeek } = useFetch(url)
+  const [readyWeek, setReadyWeek] = useState(false)
+  const [errorWeekMessage, setErrorWeekMessage] = useState("")
   const [ready, setReady] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
+  const [beginDate, setBeginDate] = useState(null)
+  const [endDate, setEndDate] = useState(null)
+  const [totalActivity, setTotalActivity] = useState(0)
+  const [totalDistance, setTotalDistance] = useState(0)
+
+  // false si l'initialisation n'a pas encore eu lieu
+  const didInit = useRef(false)
+
+  useEffect(() => {
+    if (didInit.current) return
+    didInit.current = true
+
+    // Ajustement premier rendu uniquement
+    const adjustedBegin = new Date()
+
+    // fix le début de la date à un lundi
+    if(adjustedBegin.getDay() > 1)
+      adjustedBegin.setDate(adjustedBegin.getDate() - (adjustedBegin.getDay() - 1))
+    else
+      adjustedBegin.setDate(adjustedBegin.getDate() + 1)
+
+    // Ajourd'hui
+    const adjustedEnd = new Date()
+
+    setBeginDate(adjustedBegin)
+    setEndDate(adjustedEnd)
+  }, [])
+
+  /*
+  Infos DATA
+  */
 
   useEffect(()=>{
         if(isLoading == false)
@@ -21,7 +57,6 @@ export default function DashBoard() {
           if(error == true)
           {
             const message = (data.message ?? data.toString())
-            console.log("error", message)
             setErrorMessage(message)
             return;
           }
@@ -29,6 +64,56 @@ export default function DashBoard() {
           setReady(true)
         }
   }, [isLoading])
+
+  /*
+  Week DATA
+  */
+
+  useEffect(()=>{
+    if(ready == true)
+    {
+        const ajustedUrl = `user-activity?startWeek=${formatDateISO(beginDate)}&endWeek=${formatDateISO(endDate)}`
+        setReadyWeek(false)
+        setUrl(ajustedUrl)
+    }
+  }, [ready])
+
+  useEffect(()=>{
+    if(isLoadingWeek == false)
+    {
+      if(errorWeek == true)
+      {
+        const message = (dataWeek.message ?? dataWeek.toString())
+        setErrorWeekMessage(message)
+        return;
+      }
+      
+      setReadyWeek(true)
+    }
+  }, [isLoadingWeek])
+
+  useEffect(()=>{
+    if(readyWeek == false)
+      return
+  
+    if(data.length == 0)
+    {
+      setErrorWeekMessage("Aucune donnée disponible")
+      setReadyWeek(false)
+      return
+    }
+
+    let activity = 0;
+    let distance = 0;
+
+    for (let i = 0; i < dataWeek.length; i++) {
+      activity += parseFloat(dataWeek[i].duration)
+      distance += parseFloat(dataWeek[i].distance)
+    }
+
+    setTotalActivity(activity)
+    setTotalDistance(distance)
+  }, [readyWeek])
 
   return (
     !ready ? (isLoading == true) ? <LoadingIcon></LoadingIcon> : <ErrorMessage>{errorMessage}</ErrorMessage>:
@@ -67,7 +152,7 @@ export default function DashBoard() {
       </div>
       <div className={styles.stats}>
         <h2>Cette semaine</h2>
-        <p>Du 23/06/2025 au 30/06/2025</p>
+        <p>Du {formatDateShort(beginDate)} au {formatDateShort(endDate)}</p>
         <div className={styles.items}>
           <div className={styles.box}>
             <CoursesChart></CoursesChart>
@@ -75,11 +160,11 @@ export default function DashBoard() {
           <div>
             <div className={styles.box}>
               <div className={styles.subtitle}>Durée d’activité</div>
-              <div className={styles.label1}><span>140</span> minutes</div>
+              <div className={styles.label1}><span><Placeholder ready={readyWeek} replacement="...">{totalActivity}</Placeholder></span> minutes</div>
             </div>
             <div className={styles.box}>
               <div className={styles.subtitle}>Distance</div>
-              <div className={styles.label2}><span>21.7</span> kilomètres</div>
+              <div className={styles.label2}><span><Placeholder ready={readyWeek} replacement="...">{totalDistance}</Placeholder></span> kilomètres</div>
             </div>
           </div>
         </div>

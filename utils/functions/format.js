@@ -25,6 +25,10 @@
     return date.toISOString().slice(0,10)
   }
 
+  export function formatDateShort(date){
+    return new Intl.DateTimeFormat("fr-FR").format(date)
+  }
+
   export function formatGenre(genre){
     switch(genre)
     {
