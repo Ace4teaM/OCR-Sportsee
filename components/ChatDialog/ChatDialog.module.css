@@ -77,9 +77,14 @@
   content: "";
   display: inline-block;
   border-radius: 100%;
-  background: no-repeat center white url("/chat.png");
   width: 28px;
   height: 28px;
+  vertical-align: middle;
+  text-align: center;
+  font-size: 9px;
+  line-height: 28px;
+  background-color: rgb(236, 236, 236);
+  user-select: none;
   overflow: hidden;
 }
 

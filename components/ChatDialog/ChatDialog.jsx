@@ -67,7 +67,7 @@ const ChatDialog = () => {
         <div className={styles.messages}>
          <span className={styles.closeBtn} onClick={onClickClose}>Fermer</span>
          <p className={styles.empty_message}>Posez vos questions sur votre programme,<br></br>vos performances ou vos objectifs</p>
-         <p className={styles.user_message}><span className={styles.messageUserIcon}>{ready ? <img src={`${info.data.profile.profilePicture}`}></img> : <label>U</label>}</span>Que signifie mon score de récupération ?</p>
+         <p className={styles.user_message}><span className={styles.messageUserIcon}>{ready ? <img src={`${info.data.profile.profilePicture}`}></img> : <label>vous</label>}</span>Que signifie mon score de récupération ?</p>
          <p className={styles.assistant_message}><span className={styles.messageAssistantIcon}></span>Votre score de récupération indique à quel point votre corps a récupéré après vos précédents entraînements. 
 <br/>
 Il prend en compte plusieurs facteurs comme :<br/>
