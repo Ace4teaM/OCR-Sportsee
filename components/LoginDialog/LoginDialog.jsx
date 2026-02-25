@@ -30,7 +30,7 @@ const LoginDialog = () => {
     };
 
     //{ "username": "string", "password": "string" }
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_USER_API_URL}/login`, {
       method: 'POST',
       headers: {
         "Content-Type": "application/json"
