@@ -17,6 +17,11 @@ const Menu = () => {
     dialog.showModal();
   }
 
+  const onChat = () =>{
+    var dialog = document.getElementById("chatDialog");
+    dialog.showModal();
+  }
+
   const onUnlog = () =>{
     localStorage.removeItem("token")
     localStorage.removeItem("userId")
@@ -31,7 +36,7 @@ const Menu = () => {
             <Link href="/dashboard">Dashboard</Link>
           </li>
           <li className={styles.button}>
-            <Link href="/coachai">Coach AI</Link>
+            <Link href="#" onClick={onChat}>Coach AI</Link>
           </li>
           <li className={styles.button}>
             <Link href="/profil">Mon profil</Link>

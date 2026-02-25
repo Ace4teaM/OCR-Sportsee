@@ -1,0 +1,212 @@
+.chatDialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  border: none;
+  border-radius: 10px;
+  background-color: white;
+}
+
+.container{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 600px;
+  width: 900px;
+  font-family: var(--font-inter);
+}
+
+.closeBtn{
+  position: absolute;
+  right:20px;
+  top: 20px;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 300;
+  font-size: 16px;
+  vertical-align: middle;
+  line-height: 20px;
+}
+
+.closeBtn::after{
+  content: "X";
+  font-size: 18px;
+  font-weight: 400;
+  margin-left: 6px;
+}
+
+.messages{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  flex-grow: 1;
+  overflow-y: scroll;
+  margin-top: 60px;
+  margin-bottom: 20px;
+}
+
+.empty_message{
+  color: #0B23F4;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.user_message{
+  position: relative;
+  color: black;
+  font-size: 16px;
+  font-weight: 200;
+  margin-top: 60px;
+  margin-right: 60px;
+  background-color: #E7E7E7;
+  border-radius: 10px 0px 10px 10px;
+  border: none;
+  padding: 16px;
+  max-width: 80%;
+  margin-left: auto;
+}
+
+.messageUserIcon {
+  position: absolute;
+  right: -40px;
+  bottom: 0;
+  content: "";
+  display: inline-block;
+  border-radius: 100%;
+  background: no-repeat center white url("/chat.png");
+  width: 28px;
+  height: 28px;
+  overflow: hidden;
+}
+
+.messageUserIcon img{
+    width: 28px;
+    height: 28px;
+    object-fit: cover;
+}
+
+.assistant_message{
+  position: relative;
+  color: black;
+  font-size: 16px;
+  font-weight: 200;
+  margin-left: 60px;
+  margin-top: 60px;
+  background-color: #E7E7E7;
+  border-radius: 10px 10px 10px 0px;
+  border: none;
+  padding: 16px;
+  max-width: 80%;
+  margin-right: auto;
+}
+
+.messageAssistantIcon {
+  position: absolute;
+  left: -40px;
+  bottom: 0;
+  content: "";
+  display: inline-block;
+  border-radius: 100%;
+  background: no-repeat center #F4320B url("/chat.png");
+  width: 28px;
+  height: 28px;
+  overflow: hidden;
+}
+
+.prompt{
+  position: relative;
+  height: 139px;
+  border: 1px solid #E7E7E7;
+  border-radius: 10px;
+  background-color: white;
+  color: #707070;
+  width: 80%;
+  padding: 16px;
+  flex-shrink: 0; /* ne rétrécit pas */
+}
+
+.prompt p{
+  padding: 0;
+  margin: 0;
+}
+
+.promptBtn{
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  border: none;
+  border-radius: 10px;
+  background-color: #0B23F4;
+  color: white;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.promptBtn:hover{
+  background-color: #384bf8;
+}
+
+
+.promptInput{
+  border: none;
+  width: 600px;
+  height: 100px;
+  vertical-align: top;
+  resize: none;
+  padding: 6px;
+  font-size: 14px;
+}
+
+.promptIcon{
+  display: inline-block;
+  border: none;
+  border-radius: 10px;
+  background: no-repeat center url("/chat.png");
+  width: 21px;
+  height: 21px;
+  vertical-align: middle;
+  margin-right: 10px;
+}
+
+.suggestion{
+  display: flex;
+  flex-direction: row;
+  justify-items: center;
+  align-items: center;
+  justify-content: space-between;
+  width: 80%;
+  gap: 16px;
+  box-sizing: border-box;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  color: #707070;
+  font-size: 14px;
+  height: 94px;
+  flex-shrink: 0; /* ne rétrécit pas */
+}
+
+.suggestion > span{
+  align-self: center;
+  justify-self: center;
+  height: 100%;
+  border: none;
+  border-radius: 10px;
+  background-color: #F2F3FF;
+  text-align: center;
+  padding-top: 20px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.suggestion > span:hover{
+  background-color: #f7f8ff;
+}
