@@ -7,7 +7,7 @@ import { useFetch, useFetchWithContent } from '@/utils/hooks/useFetch'
 import WritingIcon from '@/components/WritingIcon/WritingIcon'
 import LoadingIcon from "@/components/LoadingIcon/LoadingIcon";
 import { formatDate, formatDateShort, formatDateISO } from "@/utils/functions/format.js"
-
+import ReactMarkdown from 'react-markdown'
 
 const ChatDialog = () => {
 
@@ -159,8 +159,8 @@ const ChatDialog = () => {
         {conversation.length === 0 && <p className={styles.empty_message}>Posez vos questions sur votre programme,<br></br>vos performances ou vos objectifs</p>}
         {conversation.map((response, i)=>{
           if(response.role == "user")
-            return <div key={`chat-${i}`} className={styles.user_message}><span className={styles.messageUserIcon}><img src={`${info.data.profile.profilePicture}`}></img></span>{response.content.split("\n").map((line, j) => (<div key={`chat-${i}-${j}`}>{line}</div>))}</div>
-          return <div key={`chat-${i}`} className={styles.assistant_message}><span className={styles.messageAssistantIcon}></span>{response.content.split("\n").map((line, j) => (<div key={`chat-${i}-${j}`}>{line}</div>))}</div>
+            return <div key={`chat-${i}`} className={styles.user_message}><span className={styles.messageUserIcon}><img src={`${info.data.profile.profilePicture}`}></img></span><ReactMarkdown>{response.content}</ReactMarkdown></div>
+          return <div key={`chat-${i}`} className={styles.assistant_message}><span className={styles.messageAssistantIcon}></span><ReactMarkdown>{response.content}</ReactMarkdown></div>
         })}
          {chat.isLoading === true && <div className={styles.assistant_message}><span className={styles.messageAssistantIcon}></span><WritingIcon></WritingIcon></div>}
           <a ref={bottomRef}></a>

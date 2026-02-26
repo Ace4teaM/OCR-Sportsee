@@ -110,6 +110,10 @@
   margin-right: auto;
 }
 
+.assistant_message li{
+  margin-left: 30px;
+}
+
 .messageAssistantIcon {
   position: absolute;
   left: -40px;
