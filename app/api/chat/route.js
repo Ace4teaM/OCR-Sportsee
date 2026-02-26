@@ -5,7 +5,15 @@
 import Joi from "joi"
 
 const schema = Joi.object({
-  message: Joi.string().min(1).max(5000).required()
+  message: Joi.string().min(1).max(5000).required(),
+  info: Joi.object().required(),
+  activity: Joi.array().required(),
+  conversation: Joi.array().items(
+    Joi.object({
+      role: Joi.string().required(),
+      content: Joi.string().required()
+    })
+  ).min(0).required()
 })
  
 export async function POST(request) {
@@ -26,15 +34,59 @@ export async function POST(request) {
     const apiKey = process.env.MISTRAL_API_KEY
     const pathname = "/v1/chat/completions"
     const proxyURL = new URL(pathname, 'https://api.mistral.ai')
+    let conversation = [
+      {
+        role : "system",
+        content : "Tu es un coach sportif tu dois avoir un ton bienveillant et encourageant. Tu ne dois pas utiliser de termes trop techniques."
+      },
+      {
+        role : "system",
+        content : "Utilise des réponses concises, ne dépasse jamais les 300 mots"
+      },
+      {
+        role : "system",
+        content : "Si la question demande un avis médical, propose toujours à l'utilisateur de consulter un médecin. Redirige vers un médecin pour les douleurs persistantes"
+      },
+      {
+        role : "system",
+        content : "Évite les conseils trop génériques sans lien avec les données utilisateur"
+      },
+      {
+        role : "system",
+        content : "Si la question de l'utilisateur est hors sujet (ne concerne pas le coaching sportif), répond : Ha... cela dépasse mes compétences, je te suggère de te rapprocher d'une IA plus généraliste"
+      },
+      {
+        role : "user",
+        content : `Je m'appelle ${body.info.profile.firstName} je suis inscrite depuis le ${body.info.profile.createdAt}, je souhaiterais que tu réponde à certaines de mes questions`
+      },
+      {
+        role : "assistant",
+        content : `Bonjour ${body.info.profile.firstName} aucun problème, je suis là pour t'aider. Pose moi tes questions, je t'écoute...`
+      },
+      {
+        role : "user",
+        content : `Très bien, voici mes données d'entraînement:\n` + JSON.stringify(body.activity)
+      }
+    ]
+
+    // ajoute les conversations précédentes
+    if(body.conversation.length > 0)
+    {
+      conversation = conversation.concat(body.conversation)
+    }
+
+    conversation.push(
+      {
+        // transmet le message
+        role : "user",
+        content : body.message
+      }
+    )
+
     const proxyRequest = new Request(proxyURL, {
       method: "POST",
-      body: JSON.stringify({messages:[
-          {
-            // transmet le message
-            role : "user",
-            content : body.message
-          }
-        ],
+      body: JSON.stringify({
+        messages:conversation,
         model:"mistral-large-latest"
       }),
       headers:{
@@ -49,7 +101,10 @@ export async function POST(request) {
       clearTimeout(id)
 
       if(proxyResponse.status != 200)
+      {
+        console.log(await proxyResponse.json())
         throw new Error("Response error")
+      }
 
       if(proxyResponse.headers.get("content-type")?.includes("application/json") == false)
         throw new Error("Unexpected response format")
@@ -58,7 +113,7 @@ export async function POST(request) {
 
       const iaMessage = proxyBody.choices[0].message.content
 
-      console.log(iaMessage)
+      console.log(proxyBody.choices[0].message)
 
       return Response.json({ success: true, response: iaMessage })
 
