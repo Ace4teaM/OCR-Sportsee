@@ -56,8 +56,12 @@ export async function POST(request) {
         content : "Si la question de l'utilisateur est hors sujet (ne concerne pas le coaching sportif), répond : Ha... cela dépasse mes compétences, je te suggère de te rapprocher d'une IA plus généraliste"
       },
       {
+        role : "system",
+        content : `Voici quelques informations sur ton élève: ${body.info.profile.genre === "female" ? "une femme" : "un homme"} qui s'appelle ${body.info.profile.firstName} de ${body.info.profile.age} ans et ${body.info.profile.weight} kg, elle mesure ${body.info.profile.height} cm et est inscrit depuis le ${body.info.profile.createdAt}`
+      },
+      {
         role : "user",
-        content : `Je m'appelle ${body.info.profile.firstName} je suis inscrite depuis le ${body.info.profile.createdAt}, je souhaiterais que tu réponde à certaines de mes questions`
+        content : `je souhaiterais que tu réponde à certaines de mes questions`
       },
       {
         role : "assistant",
@@ -65,7 +69,7 @@ export async function POST(request) {
       },
       {
         role : "user",
-        content : `Très bien, voici mes données d'entraînement:\n` + JSON.stringify(body.activity)
+        content : `Très bien, voici mes données d'entraînement pour les 10 dernières courses:\n` + JSON.stringify(body.activity)
       }
     ]
 
