@@ -6,7 +6,7 @@ import ContextInstance from "@/utils/context/ContextInstance/ContextInstance"
 
 export function useFetch(url, domain = process.env.NEXT_PUBLIC_USER_API_URL) {
     const [data, setData] = useState({})
-    const [isLoading, setLoading] = useState(true)
+    const [isLoading, setLoading] = useState(false)
     const [error, setError] = useState(false)
     const { userToken, isReady } = useContext(ContextInstance)
 

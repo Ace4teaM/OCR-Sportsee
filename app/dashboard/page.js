@@ -14,13 +14,10 @@ import { formatDate, formatDateShort, formatDateISO } from "@/utils/functions/fo
 export default function DashBoard() {
   // infos
   const info = useFetch("user-info")
-  const [ready, setReady] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
-  // stats
+  // stats semaine
   const [ url, setUrl ] = useState(null)
   const week = useFetch(url)
-  const [readyWeek, setReadyWeek] = useState(false)
-  const [errorWeekMessage, setErrorWeekMessage] = useState("")
   const [beginDate, setBeginDate] = useState(null)
   const [endDate, setEndDate] = useState(null)
   const [totalActivity, setTotalActivity] = useState(0)
@@ -47,6 +44,9 @@ export default function DashBoard() {
 
     setBeginDate(adjustedBegin)
     setEndDate(adjustedEnd)
+    
+    const ajustedUrl = `user-activity?startWeek=${formatDateISO(adjustedBegin)}&endWeek=${formatDateISO(adjustedEnd)}`
+    setUrl(ajustedUrl)
   }, [])
 
   /*
@@ -62,8 +62,6 @@ export default function DashBoard() {
             setErrorMessage(message)
             return;
           }
-          
-          setReady(true)
         }
   }, [info.isLoading])
 
@@ -72,39 +70,9 @@ export default function DashBoard() {
   */
 
   useEffect(()=>{
-    if(ready == true)
-    {
-        const ajustedUrl = `user-activity?startWeek=${formatDateISO(beginDate)}&endWeek=${formatDateISO(endDate)}`
-        setReadyWeek(false)
-        setUrl(ajustedUrl)
-    }
-  }, [ready])
-
-  useEffect(()=>{
-    if(week.isLoading == false)
-    {
-      if(week.error == true)
-      {
-        const message = (week.data.message ?? week.data.toString())
-        setErrorWeekMessage(message)
-        return;
-      }
-      
-      setReadyWeek(true)
-    }
-  }, [week.isLoading])
-
-  useEffect(()=>{
-    if(readyWeek == false)
+    if(week.hasData == false || week.data.length == 0)
       return
   
-    if(week.data.length == 0)
-    {
-      setErrorWeekMessage("Aucune donnée disponible")
-      setReadyWeek(false)
-      return
-    }
-
     let activity = 0;
     let distance = 0;
 
@@ -115,10 +83,10 @@ export default function DashBoard() {
 
     setTotalActivity(activity)
     setTotalDistance(distance)
-  }, [readyWeek])
+  }, [week.hasData])
 
   return (
-    !ready ? (info.isLoading == true) ? <LoadingIcon></LoadingIcon> : <ErrorMessage>{errorMessage}</ErrorMessage>:
+    info.isLoading === true ? <LoadingIcon></LoadingIcon> : errorMessage ? <ErrorMessage>{errorMessage}</ErrorMessage> : info.hasData ?
     <div className={styles.container}>
       <div className={styles.banner}>
           <div><span className="icon star"></span>Posez vos questions sur votre programme, vos performances ou vos objectifs.</div>
@@ -162,15 +130,16 @@ export default function DashBoard() {
           <div>
             <div className={styles.box}>
               <div className={styles.subtitle}>Durée d’activité</div>
-              <div className={styles.label1}><span><Placeholder ready={readyWeek} replacement="...">{totalActivity}</Placeholder></span> minutes</div>
+              <div className={styles.label1}><span><Placeholder ready={week.hasData} replacement="...">{totalActivity}</Placeholder></span> minutes</div>
             </div>
             <div className={styles.box}>
               <div className={styles.subtitle}>Distance</div>
-              <div className={styles.label2}><span><Placeholder ready={readyWeek} replacement="...">{totalDistance}</Placeholder></span> kilomètres</div>
+              <div className={styles.label2}><span><Placeholder ready={week.hasData} replacement="...">{totalDistance}</Placeholder></span> kilomètres</div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    : <></>
   );
 }
