@@ -8,6 +8,7 @@ import WritingIcon from '@/components/WritingIcon/WritingIcon'
 import LoadingIcon from "@/components/LoadingIcon/LoadingIcon";
 import { formatDate, formatDateShort, formatDateISO } from "@/utils/functions/format.js"
 
+
 const ChatDialog = () => {
 
   // infos
@@ -24,6 +25,9 @@ const ChatDialog = () => {
   const [inputMessage, setInputMessage] = useState("où imprimer des fichiers STL")
   // historique des conversations
   const [conversation, setConversation] = useState([])
+
+  // maximum de messages dans la conversation (assistant + utilisateur)
+  const maxConversations = 40
 
   useEffect(()=>{
     if(info.isLoading == false)
@@ -71,9 +75,8 @@ const ChatDialog = () => {
     {
       if(chat.data.response !== undefined){
         // ajoute la convesation précédente à l'historique
-        setConversation(prev => [...prev, {role:"user", content:inputMessage.trim()}])
+        setConversation(prev => [...prev, {role:"user", content:inputMessage.trim()}, {role:"assistant", content:chat.data.response}].slice(-maxConversations))
         setInputMessage("")
-        setConversation(prev => [...prev, {role:"assistant", content:chat.data.response}])
       }
     }
   }, [chat.hasData])
