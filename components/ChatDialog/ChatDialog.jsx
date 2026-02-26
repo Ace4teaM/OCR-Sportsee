@@ -56,6 +56,12 @@ const ChatDialog = () => {
   }, [chat.hasData])
 
   function sendMessage(){
+      if(!inputMessage)
+      {
+        setChatErrorMessage("Empty message")
+        return;
+      }
+
       setPost({
         message : inputMessage.trim()
       })
@@ -131,6 +137,7 @@ const ChatDialog = () => {
         <div className={styles.error}>
           {
           chatErrorMessage === "This operation was aborted" ? "La réponse a dépassé le temps imparti, veuillez reéssayer ou reformuler votre demande." :
+          chatErrorMessage === "Empty message" ? "Veuillez saisir un message." :
           chatErrorMessage ? "Une erreur est survenue : " + chatErrorMessage : ""
           }
           </div>

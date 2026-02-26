@@ -20,10 +20,7 @@ export async function POST(request) {
     const { error, value } = schema.validate(body)
 
     if (error) {
-      return Response.json(
-        { error: error.details },
-        { status: 400 }
-      )
+      return new Response(error.details[0].message, { status: 500 }) // retourne le premier message d'erreur
     }
 
     const apiKey = process.env.MISTRAL_API_KEY
