@@ -15,7 +15,6 @@ export function useFetch(url, domain = process.env.NEXT_PUBLIC_USER_API_URL) {
     ,[isLoading, error, data])
 
     useEffect(() => {
-        if (!url) return
         async function fetchData() {
             try {
                 const response = await fetch(`${domain}/${url}`, 
@@ -26,10 +25,18 @@ export function useFetch(url, domain = process.env.NEXT_PUBLIC_USER_API_URL) {
                         },
                     }
                 );
-                const data = await response.json()
                 if(response.status != 200)
                     setError(true)
-                setData(data)
+
+                if(response.headers.get("content-type")?.includes("application/json")) // ex: Content-Type: application/json; charset=utf-8
+                {
+                    const data = await response.json()
+                    setData(data)
+                }
+                else{
+                    const data = await response.text()
+                    setData(data)
+                }
             } catch (err) {
                 console.log(err)
                 setData(err)
@@ -41,6 +48,7 @@ export function useFetch(url, domain = process.env.NEXT_PUBLIC_USER_API_URL) {
         if (isReady && url) {
             console.log("loading",url)
             setLoading(true)
+            setError(false)
             fetchData()
         }
     }, [isReady, url])
@@ -59,7 +67,6 @@ export function useFetchWithContent(url, post, domain = process.env.NEXT_PUBLIC_
     ,[isLoading, error, data])
 
     useEffect(() => {
-        if (!url) return
         async function fetchData() {
             try {
                 const response = await fetch(`${domain}/${url}`, 
@@ -72,10 +79,19 @@ export function useFetchWithContent(url, post, domain = process.env.NEXT_PUBLIC_
                         body: JSON.stringify(post)
                     }
                 );
-                const data = await response.json()
+
                 if(response.status != 200)
                     setError(true)
-                setData(data)
+
+                if(response.headers.get("content-type")?.includes("application/json")) // ex: Content-Type: application/json; charset=utf-8
+                {
+                    const data = await response.json()
+                    setData(data)
+                }
+                else{
+                    const data = await response.text()
+                    setData(data)
+                }
             } catch (err) {
                 console.log(err)
                 setData(err)
@@ -87,6 +103,7 @@ export function useFetchWithContent(url, post, domain = process.env.NEXT_PUBLIC_
         if (isReady && url && post) {
             console.log("loading",url,"with",post)
             setLoading(true)
+            setError(false)
             fetchData()
         }
     }, [isReady, url, post])
