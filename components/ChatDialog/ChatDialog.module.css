@@ -216,3 +216,11 @@
 .suggestion > span:hover{
   background-color: #f7f8ff;
 }
+
+.error{
+  flex-shrink: 0; /* ne rétrécit pas */
+  color: #F4320B;
+  font-size: 16px;
+  height: 20px;
+  margin-bottom: 6px;
+}

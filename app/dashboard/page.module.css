@@ -58,6 +58,8 @@
     padding: 16px 36px 16px 36px;
     color: #FFFFFF;
     border: none;
+    cursor: pointer;
+    user-select: none;
 }
 
 .button img{

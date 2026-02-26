@@ -85,12 +85,17 @@ export default function DashBoard() {
     setTotalDistance(distance)
   }, [week.hasData])
 
+  const onChat = () =>{
+    var dialog = document.getElementById("chatDialog");
+    dialog.showModal();
+  }
+
   return (
     info.isLoading === true ? <LoadingIcon></LoadingIcon> : errorMessage ? <ErrorMessage>{errorMessage}</ErrorMessage> : info.hasData ?
     <div className={styles.container}>
       <div className={styles.banner}>
           <div><span className="icon star"></span>Posez vos questions sur votre programme, vos performances ou vos objectifs.</div>
-          <span className={`${styles.button} ${styles.buttonAnim}`}>Lancer une conversation</span>
+          <span className={`${styles.button} ${styles.buttonAnim}`} onClick={onChat}>Lancer une conversation</span>
       </div>
       <div className={styles.profil}>
         <div className={styles.photo}>

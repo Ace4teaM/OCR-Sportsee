@@ -2,7 +2,6 @@
   accepte les messages utilisateur et fait les requêtes adaptées à l’API Mistral
 */
 
-import { fetchWithTimeout } from "@/utils/functions/fetchWithTimeout";
 import Joi from "joi"
 
 const schema = Joi.object({
@@ -11,7 +10,7 @@ const schema = Joi.object({
  
 export async function POST(request) {
   
-  const timeout = 20000 // 20sec
+  const timeout = 60000 // ms
   const controller = new AbortController()
   const id = setTimeout(() => controller.abort(), timeout)
 
@@ -53,8 +52,11 @@ export async function POST(request) {
       clearTimeout(id)
 
       if(proxyResponse.status != 200)
-        throw new Error("Erreur de format de requête")
-      
+        throw new Error("Response error")
+
+      if(proxyResponse.headers.get("content-type")?.includes("application/json") == false)
+        throw new Error("Unexpected response format")
+
       const proxyBody = await proxyResponse.json()
 
       const iaMessage = proxyBody.choices[0].message.content
