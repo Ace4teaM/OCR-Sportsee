@@ -1,0 +1,52 @@
+.container {
+  container-type: size;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  justify-items: flex-start;
+  width: 60px;
+  height: 25px;
+}
+
+
+.point{
+  display: inline-block;
+  border-radius: 100%;
+  border: none;
+  background-color: orange;
+  width: 10px;
+  height: 10px;
+  margin-top: auto;
+  margin-right: 3px;
+  transform: translateY(0px);
+  animation-name: bars;
+  animation-duration: 1000ms;
+  animation-iteration-count: infinite;
+  animation-direction: alternate-reverse;
+}
+
+.point1{
+  animation-delay: 100ms;
+}
+
+.point2{
+  animation-delay: 200ms;
+}
+
+.point3{
+  animation-delay: 300ms;
+}
+
+.point4{
+  animation-delay: 400ms;
+}
+
+@keyframes bars {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-10px);
+    }
+}
+

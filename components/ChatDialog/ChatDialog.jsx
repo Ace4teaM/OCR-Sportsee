@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import styles from './ChatDialog.module.css'
 import { HiOutlineArrowNarrowUp   } from "react-icons/hi"
 import { useFetch, useFetchWithContent } from '@/utils/hooks/useFetch'
+import WritingIcon from '@/components/WritingIcon/WritingIcon'
 
 const ChatDialog = () => {
 
@@ -118,7 +119,7 @@ const ChatDialog = () => {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [conversation, chat.isLoading]);
+  }, [conversation, chat.isLoading, chatErrorMessage]);
 
   return (
     <dialog id="chatDialog" className={styles.chatDialog} onMouseUp={handleMouseUp} onMouseDown={handleMouseDown}>
@@ -131,7 +132,7 @@ const ChatDialog = () => {
             return <div key={`chat-${i}`} className={styles.user_message}><span className={styles.messageUserIcon}>{ready ? <img src={`${info.data.profile.profilePicture}`}></img> : <label>vous</label>}</span>{response.message.split("\n").map((line, j) => (<div key={`chat-${i}-${j}`}>{line}</div>))}</div>
           return <div key={`chat-${i}`} className={styles.assistant_message}><span className={styles.messageAssistantIcon}></span>{response.message.split("\n").map((line, j) => (<div key={`chat-${i}-${j}`}>{line}</div>))}</div>
         })}
-         {chat.isLoading === true && <p className={styles.assistant_message}><span className={styles.messageAssistantIcon}></span>...</p>}
+         {chat.isLoading === true && <p className={styles.assistant_message}><span className={styles.messageAssistantIcon}></span><WritingIcon></WritingIcon></p>}
           <a ref={bottomRef}></a>
         </div>
         <div className={styles.error}>
