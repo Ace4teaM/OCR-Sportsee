@@ -92,7 +92,7 @@ const ChatDialog = () => {
         conversation : [...conversation],
         message : inputMessage.trim(),
         info : info.data,
-        activity : activity.data
+        activity : activity.data.slice(-10)
       })
       setChatErrorMessage("")
   }
