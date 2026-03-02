@@ -22,7 +22,7 @@ const ChatDialog = () => {
   const [chatErrorMessage, setChatErrorMessage] = useState("")
   const chat = useFetchWithContent("chat", post, process.env.NEXT_PUBLIC_ASSIST_API_URL)
   // message utilisateur
-  const [inputMessage, setInputMessage] = useState("où imprimer des fichiers STL")
+  const [inputMessage, setInputMessage] = useState("")
   // historique des conversations
   const [conversation, setConversation] = useState([])
 
