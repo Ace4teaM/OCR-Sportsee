@@ -9,6 +9,7 @@ import DistanceChart from "@/components/DistanceChart/DistanceChart";
 import CoursesChart from "@/components/CoursesChart/CoursesChart";
 import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import Placeholder from '@/components/Placeholder/Placeholder'
+import PlanningPanel from '@/components/PlanningPanel/PlanningPanel'
 import { formatDate, formatDateShort, formatDateISO } from "@/utils/functions/format.js"
 
 export default function DashBoard() {
@@ -39,7 +40,7 @@ export default function DashBoard() {
     else
       adjustedBegin.setDate(adjustedBegin.getDate() + 1)
 
-    // Ajourd'hui
+    // Aujourd'hui
     const adjustedEnd = new Date()
 
     setBeginDate(adjustedBegin)
@@ -143,6 +144,9 @@ export default function DashBoard() {
             </div>
           </div>
         </div>
+      </div>
+      <div className={styles.box}>
+        <PlanningPanel></PlanningPanel>
       </div>
     </div>
     : <></>

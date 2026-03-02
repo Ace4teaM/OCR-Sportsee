@@ -6,6 +6,19 @@ import Joi from "joi"
 
 const schema = Joi.object({
   message: Joi.string().min(5).required()
+ /* ,disponibility: Joi.array().items(
+    Joi.object({
+      day: Joi.string().valid("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche").required(),
+      startTime: Joi.string().pattern(/^([01]\d|2[0-3]):([0-5]\d)$/).required(), // format HH:mm
+      endTime: Joi.string().pattern(/^([01]\d|2[0-3]):([0-5]\d)$/).required() // format HH:mm
+    })
+  ).required(),
+  constraints: Joi.object({
+    maxDuration: Joi.number().min(5).max(336).required(), // Durée maximale de l'entraînement en minutes (max 2 semaines)
+    preferredIntensity: Joi.string().valid("faible", "modérée", "élevée").required(),
+    equipment: Joi.array().items(Joi.string()).required(), // liste d'équipements disponibles
+    healthConditions: Joi.array().items(Joi.string()).required() // liste de conditions de santé à prendre en compte
+  }).required()*/
 })
 
 const responseSchema = Joi.object({

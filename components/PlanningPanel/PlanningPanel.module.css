@@ -1,0 +1,82 @@
+.container{
+}
+
+.content{
+    position: relative;
+    height: 380px;
+    width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.page{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-items: flex-start;
+    align-items: center;
+    text-align: center;
+}
+
+.page h2{
+    margin-top: 30px;
+    margin-bottom: 0px;
+}
+
+.planningIcon{
+    display: inline-block;
+    width: 66px;
+    height: 66px;
+}
+
+.button{
+    display: flex;
+    align-items: center;
+    position: relative;
+    border-radius: 10px;
+    background-color: blue;
+    padding: 16px 36px 16px 36px;
+    color: #FFFFFF;
+    border: none;
+    cursor: pointer;
+    user-select: none;
+}
+
+.buttonBack{
+    background-color: white !important;
+    border: 1px solid black !important; 
+    color: black !important;
+    padding: 16px;
+}
+
+.input{
+    height: 50px;
+    font-size: 18px;
+    padding: 6px;
+    margin: 10px;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    width: 260px;
+}
+
+.label{
+    color: #808080;
+    width: 260px;
+    text-align: left;
+    font-size: 12px;
+    margin-bottom: -10px;
+}
+
+.buttons{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: auto;
+}

@@ -116,3 +116,7 @@ footer {
   height: 33px;
   cursor: pointer;
 }
+
+.hidden{
+    display: none !important;
+}
