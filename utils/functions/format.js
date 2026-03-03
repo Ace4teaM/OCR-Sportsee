@@ -12,6 +12,16 @@
     })
   }
 
+  export function capitalizeFirst(text){
+    return text.length > 0 ? text[0].toUpperCase() + text.slice(1) : text
+  }
+
+  export function formatDateDay(date){
+    return capitalizeFirst(new Date(date).toLocaleDateString("fr-FR",{
+      weekday: "long"
+    }))
+  }
+
   export function formatDateMD(date){
     return new Date(date).toLocaleDateString("fr-FR",{
       weekday: undefined,
@@ -46,4 +56,22 @@
 
   export function min(time){
     return parseInt(time % 60);
+  }
+
+  export function getWeekNumber(date) {
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    
+    // jour de la semaine (1 = lundi, 7 = dimanche)
+    const dayNum = d.getUTCDay() || 7;
+    
+    // se placer sur le jeudi de la semaine
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    
+    // début de l'année
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    
+    // calcul du numéro de semaine
+    const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+
+    return weekNo;
   }

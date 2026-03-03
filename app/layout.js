@@ -6,6 +6,7 @@ import Menu from "@/components/Menu/Menu";
 import Footer from "@/components/Footer/Footer";
 import LoginDialog from "@/components/LoginDialog/LoginDialog";
 import ChatDialog from "@/components/ChatDialog/ChatDialog";
+import PlanningDialog from "@/components/PlanningDialog/PlanningDialog";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,6 +43,7 @@ export default function RootLayout({ children }) {
             </section>
             <LoginDialog></LoginDialog>
             <ChatDialog></ChatDialog>
+            <PlanningDialog></PlanningDialog>
           </main>
           <Footer></Footer>
         </ContextProvider>

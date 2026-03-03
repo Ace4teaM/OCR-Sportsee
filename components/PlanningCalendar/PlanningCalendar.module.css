@@ -1,0 +1,111 @@
+.weekBox{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: center;
+  gap: 10px;
+  padding: 30px;
+  border: 1px solid #E7E7E7;
+  border-radius: 10px;
+  background-color: white;
+  margin-bottom: 20px;
+}
+
+.dayBox{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px;
+  border: 1px solid #717171;
+  border-radius: 10px;
+  background-color: white;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.buttons{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.button{
+    display: flex;
+    align-items: center;
+    position: relative;
+    border-radius: 10px;
+    background-color: blue;
+    padding: 16px 36px 16px 36px;
+    color: #FFFFFF;
+    border: none;
+    cursor: pointer;
+    user-select: none;
+}
+
+.title{
+  text-align: center;
+}
+
+.title h2{
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.week{
+  font-size: 26px;
+  font-weight: bold;
+}
+
+.day{
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.objectif{
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.details{
+  font-size: 16px;
+  color: #707070;
+  margin-top: 6px;
+  max-width: calc(100% - 100px);
+}
+
+.duration{
+    font-size: 14px;
+    font-weight: bold;
+    position: absolute;
+    right: 30px;
+    bottom: 30px;
+    padding: 10px 20px 10px 20px;
+    border-radius: 30px;
+    border: none;
+    background-color: #F2F3FF;
+    user-select: none;
+}
+
+.plus{
+    font-size: 16px;
+    position: absolute;
+    right: 30px;
+    top: 30px;
+    border-radius: 100%;
+    border: none;
+    background-color: #F2F3FF;
+    padding: 10px;
+    color: #0B23F4;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+}

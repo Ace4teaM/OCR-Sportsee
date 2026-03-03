@@ -8,6 +8,7 @@ const ContextProvider = ({ children }) => {
   const [userId, setUserId] = useState(null)
   const [logged, setLogged] = useState(null)
   const [isReady, setIsReady] = useState(false)
+  const [planning, setPlanning] = useState({})
 
   // false si l'initialisation n'a pas encore eu lieu
   const didInit = useRef(false)
@@ -40,7 +41,7 @@ const ContextProvider = ({ children }) => {
   }, [userId])
 
   return (
-    <ContextInstance.Provider value={{ userToken, setUserToken, userId, setUserId, logged, setLogged, isReady }}>
+    <ContextInstance.Provider value={{ userToken, setUserToken, userId, setUserId, logged, setLogged, isReady, planning, setPlanning }}>
         {children}
     </ContextInstance.Provider>
   )

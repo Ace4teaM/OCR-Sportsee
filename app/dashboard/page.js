@@ -10,6 +10,7 @@ import CoursesChart from "@/components/CoursesChart/CoursesChart";
 import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import Placeholder from '@/components/Placeholder/Placeholder'
 import PlanningPanel from '@/components/PlanningPanel/PlanningPanel'
+import PlanningCalendar from '@/components/PlanningCalendar/PlanningCalendar'
 import { formatDate, formatDateShort, formatDateISO } from "@/utils/functions/format.js"
 
 export default function DashBoard() {

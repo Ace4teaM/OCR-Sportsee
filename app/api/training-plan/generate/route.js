@@ -5,23 +5,14 @@
 import Joi from "joi"
 
 const schema = Joi.object({
-  message: Joi.string().min(5).required()
- /* ,disponibility: Joi.array().items(
-    Joi.object({
-      day: Joi.string().valid("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche").required(),
-      startTime: Joi.string().pattern(/^([01]\d|2[0-3]):([0-5]\d)$/).required(), // format HH:mm
-      endTime: Joi.string().pattern(/^([01]\d|2[0-3]):([0-5]\d)$/).required() // format HH:mm
-    })
-  ).required(),
-  constraints: Joi.object({
-    maxDuration: Joi.number().min(5).max(336).required(), // Durée maximale de l'entraînement en minutes (max 2 semaines)
-    preferredIntensity: Joi.string().valid("faible", "modérée", "élevée").required(),
-    equipment: Joi.array().items(Joi.string()).required(), // liste d'équipements disponibles
-    healthConditions: Joi.array().items(Joi.string()).required() // liste de conditions de santé à prendre en compte
-  }).required()*/
+  objectif: Joi.string().required(),
+  info: Joi.object().required(),
+  activity: Joi.array().required(),
+  date: Joi.date().required()
 })
 
 const responseSchema = Joi.object({
+  day: Joi.date().iso().required(),
   duration: Joi.number().required().min(5).max(336), // Durée de l'entraînement en minutes (max 2 semaines)
   description: Joi.string().required(),
   intensity: Joi.string().required(),
@@ -50,12 +41,17 @@ export async function POST(request) {
     let conversation = [
       {
         role : "system",
-        content : "Tu es un agent sportif planificateur de programmes d'entraînement personnalisés. Tu génère un programme personnalisé basé sur l'analyse des données utilisateur et ses contraintes personnelles"
+        content : "Tu es un agent sportif planificateur de programmes d'entraînement personnalisés.\n"+
+                  "Tu génère un programme personnalisé basé sur l'analyse des données utilisateur et ses contraintes personnelles.\n"+
+                  `Limite à une activité par jour et uniquement dans les jours de la semaine indiqué par ton élève.\n`+
+                  `L'activité peut commencer à partir de ${body.date}\n`
       },
       {
         role : "system",
-        content : "Répond avec un objet JSON structuré de la manière suivante : { duration: integer, description: string, intensity: string, objectif: string, advice: string }\n"+
-                  "duration: Durée de l'entraînement en minutes (ex: 30, 60...)\n" + 
+        content : "Retourne uniquement un objet JSON strict et compact, en respectant les guillemets doubles et les caractères d’échappement nécessaires, sans ajouter de texte, bloc de code ```json ou d’explications autour\n"+
+                  "{ program: [ { day: date, duration: integer, description: string, intensity: string, objectif: string, advice: string }, ... ] }\n"+
+                  "day: Date du jour de l'exercice au format YYYY-MM-DD\n" + 
+                  "duration: Durée de l'entraînement en minutes (ex: 30, 60, ...)\n" + 
                   "description: Description détaillée (échauffement, corps de séance, retour au calme\n" + 
                   "intensity: Intensité/allure recommandée\n" + 
                   "objectif: Rappel de l'objectif de la séance\n" + 
@@ -63,12 +59,15 @@ export async function POST(request) {
       },
       {
         role : "system",
-        content : "Si la question est hors sujet ou inréaliste répons avec un l'objet structuré suivant: { raison: string }\n"+
-                  "raison: raison de l'impossibilité de générer un programme\n"
+        content : "Si la question est hors sujet ou irréaliste réponds avec un message non structuré indiquant la cause de l'impossibilité de générer un programme\n"
+      },
+      {
+        role : "system",
+        content : `Voici quelques informations sur ton élève: ${body.info.profile.genre === "female" ? "une femme" : "un homme"} qui s'appelle ${body.info.profile.firstName} de ${body.info.profile.age} ans et ${body.info.profile.weight} kg, elle mesure ${body.info.profile.height} cm et est inscrit depuis le ${body.info.profile.createdAt}`
       },
       {
         role : "user",
-        content : body.message
+        content : `Bonjour coach, voici mon objectif: ${body.objectif}\nPeux-tu me générer un programme d'entraînement personnalisé pour atteindre cet objectif en prenant en compte mes données et mes contraintes ?`
       }
     ]
 
@@ -84,40 +83,48 @@ export async function POST(request) {
       },
       signal: controller.signal
     })
-  
-    try {
-      const proxyResponse = await fetch(proxyRequest)
-      clearTimeout(id)
 
-      if(proxyResponse.status != 200)
-      {
-        console.log(await proxyResponse.json())
-        throw new Error("Response error")
-      }
+    const proxyResponse = await fetch(proxyRequest)
+    clearTimeout(id)
 
-      if(proxyResponse.headers.get("content-type")?.includes("application/json") == false)
-        throw new Error("Unexpected response format")
+    if(proxyResponse.headers.get("content-type")?.includes("application/json") == false)
+      throw new Error("Unexpected response format")
 
-      const proxyBody = await proxyResponse.json()
+    const proxyBody = await proxyResponse.json()
 
-      const iaMessage = proxyBody.choices[0].message.content
-
-      console.log(proxyBody.choices[0].message)
-
-      const { respError, respValue } = schema.validate(iaMessage)
-
-      if (error) {
-        return new Response(respError.details[0].message, { status: 500 }) // retourne le premier message d'erreur
-      }
-
-      return Response.json({ success: true, response: iaMessage })
-
-    } catch (reason) {
-      const message =
-        reason instanceof Error ? reason.message : 'Unexpected exception'
-  
-      return new Response(message, { status: 500 })
+    if(proxyBody.choices[0].message == undefined || proxyBody.choices[0].message.content == undefined)
+    {
+      throw new Error("Unexpected response format from IA API")
     }
+    console.log(proxyBody.choices[0].message)
+
+    // test le format de la réponse de l'ia, si elle n'est pas au format attendu, on considère que c'est une erreur
+    let iaMessage;
+    try {
+      iaMessage = JSON.parse(proxyBody.choices[0].message.content)
+    }
+    catch(e)
+    {
+      // si erreur de formatage JSON, on considère que c'est une erreur de l'ia et on retourne le message d'erreur
+      if(proxyBody.choices[0].message.content.substring(0) == '{')
+        throw new Error("Unexpected response format from IA API")
+      // sinon, on considère que c'est un message de l'ia
+      throw new Error(proxyBody.choices[0].message.content)
+    }
+
+    // test le status de la réponse de l'ia, si ce n'est pas 200, on considère que c'est une erreur
+    if(proxyResponse.status != 200)
+    {
+      throw new Error("Error from IA API : " + proxyResponse.status)
+    }
+
+    const { respError, respValue } = responseSchema.validate(iaMessage)
+    if (respError) {
+      throw new Error({ success: false, response: iaMessage })
+    }
+
+    return Response.json({ success: true, response: iaMessage })
+
   } catch (reason) {
     const message =
       reason instanceof Error ? reason.message : 'Unexpected error'

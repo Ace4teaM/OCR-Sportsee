@@ -1,19 +1,21 @@
 "use client"
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useContext } from 'react';
 import styles from './PlanningPanel.module.css'
 import { HiOutlineArrowLeft   } from "react-icons/hi"
 import { useFetch, useFetchWithContent } from '@/utils/hooks/useFetch'
-import WritingIcon from '@/components/WritingIcon/WritingIcon'
 import LoadingIcon from "@/components/LoadingIcon/LoadingIcon";
-import { formatDate, formatDateShort, formatDateISO } from "@/utils/functions/format.js"
+import { formatDateISO } from "@/utils/functions/format.js"
+import ContextInstance from "@/utils/context/ContextInstance/ContextInstance"
 import ReactMarkdown from 'react-markdown'
 
 const PlanningPanel = () => {
+  const { setPlanning } = useContext(ContextInstance)
   // pages
   const page1Ref = useRef(0)
   const page2Ref = useRef(0)
   const page3Ref = useRef(0)
+  const page4Ref = useRef(0)
   const objectifRef = useRef(0)
   const dateRef = useRef(0)
   const [pageIndex, setPageIndex] = useState(0)
@@ -27,13 +29,7 @@ const PlanningPanel = () => {
   const [post, setPost] = useState(null)
   const [planningErrorMessage, setPlanningErrorMessage] = useState("")
   const planning = useFetchWithContent("training-plan/generate", post, process.env.NEXT_PUBLIC_ASSIST_API_URL)
-  // message utilisateur
-  const [inputMessage, setInputMessage] = useState("")
-  // historique des conversations
-  const [conversation, setConversation] = useState([])
 
-  // maximum de messages dans la conversation (assistant + utilisateur)
-  const maxConversations = 40
 
   useEffect(()=>{
     if(info.isLoading == false)
@@ -79,10 +75,15 @@ const PlanningPanel = () => {
   useEffect(()=>{
     if(planning.hasData)
     {
-      if(planning.data.response !== undefined){
-        // ajoute la convesation précédente à l'historique
-        setConversation(prev => [...prev, {role:"user", content:inputMessage.trim()}, {role:"assistant", content:planning.data.response}].slice(-maxConversations))
-        setInputMessage("")
+      if(planning.data.success === true){
+        setPlanning(planning.data.response.program)
+        
+        var dialog = document.getElementById("planningDialog");
+        dialog.showModal();
+
+        document.querySelector("form").reset()
+        setPageIndex(0)
+        
       }
     }
   }, [planning.hasData])
@@ -110,6 +111,9 @@ const PlanningPanel = () => {
       break;
       case 2:
       curPageRef = page3Ref
+      break;
+      case 3:
+      curPageRef = page4Ref
       break;
       default:
         throw new Error("Invalid page index")
@@ -140,12 +144,9 @@ const PlanningPanel = () => {
     const formData = new FormData(e.target)
     const data = Object.fromEntries(formData.entries())
 
-    console.log(data)
-
     sendMessage(data)
 
-    form.reset()
-    setPageIndex(0)
+    setPageIndex(3)
   }
   
   const onClickNext = () => {
@@ -170,6 +171,10 @@ const PlanningPanel = () => {
         onClickNext()
       }
     }
+  }
+
+  const onClickCancel = () => {
+    setPageIndex(0)
   }
 
   return (
@@ -203,6 +208,15 @@ const PlanningPanel = () => {
             <div className={styles.buttons}>
               <button type="button" className={`${styles.button} ${styles.buttonBack}`} onClick={onClickPrev}><HiOutlineArrowLeft></HiOutlineArrowLeft></button>
               <button type="submit" className={styles.button}>Générer mon planning</button>
+            </div>
+          </div>
+          <div ref={page4Ref} className={[styles.page, pageIndex !== 3 && "hidden"].join(" ")}>
+            <img src="/calendar.png" alt="Planning" className={styles.planningIcon}></img>
+            <h2>Génération du planning...</h2>
+            <p>Veuillez patienter quelques instants...</p>
+            {planning.isLoading === true ? <LoadingIcon></LoadingIcon> : planningErrorMessage ? <div className={styles.error}><ReactMarkdown>{planningErrorMessage}</ReactMarkdown></div> : null}
+            <div className={styles.buttons}>
+              <button type="button" className={`${styles.button} ${styles.buttonBack}`} onClick={onClickCancel}>Annuler</button>
             </div>
           </div>
         </div>
