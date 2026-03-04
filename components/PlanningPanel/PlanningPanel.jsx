@@ -173,8 +173,11 @@ const PlanningPanel = () => {
   const onSubmit = (e) => {
     e.preventDefault()
 
-    if(planning.isLoading)
+    if(planning.isLoading || activity.isLoading)
+    {
+      alert("Veuillez patienter pendant le chargement des données...")
       return;
+    }
 
     const form = document.querySelector("form");
     if(form.checkValidity() === false)
@@ -256,7 +259,7 @@ const PlanningPanel = () => {
             <img src="/calendar.png" alt="Planning" className={styles.planningIcon}></img>
             <h2>Génération du planning...</h2>
             <p>Veuillez patienter quelques instants...</p>
-            {planning.isLoading === true ? <LoadingIcon></LoadingIcon> : planningErrorMessage ? <div className={styles.error}><ReactMarkdown>{planningErrorMessage}</ReactMarkdown></div> : null}
+            {planning.isLoading === true || activity.isLoading === true ? <LoadingIcon></LoadingIcon> : planningErrorMessage || errorMessage ? <div className={styles.error}><ReactMarkdown>{planningErrorMessage ?? errorMessage}</ReactMarkdown></div> : null}
             <div className={styles.buttons}>
               <button type="button" className={`${styles.button} ${styles.buttonBack}`} onClick={onClickCancel}>Annuler</button>
             </div>
