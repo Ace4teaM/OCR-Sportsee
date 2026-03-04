@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import styles from './ChatDialog.module.css'
 import { HiOutlineArrowNarrowUp   } from "react-icons/hi"
 import { useFetch, useFetchWithContent } from '@/utils/hooks/useFetch'
@@ -12,14 +12,12 @@ import ReactMarkdown from 'react-markdown'
 const ChatDialog = () => {
 
   // infos
-  const [errorMessage, setErrorMessage] = useState("")
   const info = useFetch("user-info")
   // data
   const [activityUrl, setActivityUrl] = useState(null)
   const activity = useFetch(activityUrl)
   // chat
   const [post, setPost] = useState(null)
-  const [chatErrorMessage, setChatErrorMessage] = useState("")
   const chat = useFetchWithContent("chat", post, process.env.NEXT_PUBLIC_ASSIST_API_URL)
   // message utilisateur
   const [inputMessage, setInputMessage] = useState("")
@@ -29,52 +27,35 @@ const ChatDialog = () => {
   // maximum de messages dans la conversation (assistant + utilisateur)
   const maxConversations = 40
 
-  useEffect(()=>{
-    if(info.isLoading == false)
-    {
-      if(info.error == true)
-      {
-        const message = (info.data.message ?? info.data.toString())
-        setErrorMessage(message)
-        return;
-      }
-      
-      if(info.hasData == true)
-      {
-        setActivityUrl(`user-activity?startWeek=${info.data.profile.createdAt}&endWeek=${formatDateISO(new Date())}`)
-      }
+  const errorMessage = useMemo(() => {
+    if (!info.isLoading && info.error) {
+      return info.data?.message ?? info.data?.toString()
     }
-  }, [info.isLoading])
+    if (!activity.isLoading && activity.error) {
+      return activity.data?.message ?? activity.data?.toString()
+    }
+    return null
+  }, [info, activity])
+
+  const chatErrorMessage = useMemo(() => {
+    if (!chat.isLoading && chat.error) {
+      return chat.data.content !== undefined ? chat.data.content : chat.data.toString()
+    }
+    return null
+  }, [chat])
 
   useEffect(()=>{
-    if(activity.isLoading == false)
+    if(info.hasData == true)
     {
-      if(activity.error == true)
-      {
-        const message = (activity.data.message ?? info.data.toString())
-        setErrorMessage(message)
-        return;
-      }
+      setActivityUrl(`user-activity?startWeek=${info.data.profile.createdAt}&endWeek=${formatDateISO(new Date())}`)
     }
-  }, [activity.isLoading])
-
-  useEffect(()=>{
-    if(chat.isLoading == false)
-    {
-      if(chat.error == true)
-      {
-        const message = (chat.data.content !== undefined ? chat.data.content : chat.data.toString())
-        setChatErrorMessage(message)
-        return;
-      }
-    }
-  }, [chat.isLoading])
+  }, [info.hasData])
 
   useEffect(()=>{
     if(chat.hasData)
     {
       if(chat.data.response !== undefined){
-        // ajoute la convesation précédente à l'historique
+        // ajoute la conversation précédente à l'historique
         setConversation(prev => [...prev, {role:"user", content:inputMessage.trim()}, {role:"assistant", content:chat.data.response}].slice(-maxConversations))
         setInputMessage("")
       }
@@ -83,10 +64,7 @@ const ChatDialog = () => {
 
   function sendMessage(){
       if(!inputMessage)
-      {
-        setChatErrorMessage("Empty message")
         return;
-      }
 
       setPost({
         conversation : [...conversation],
@@ -94,7 +72,6 @@ const ChatDialog = () => {
         info : info.data,
         activity : activity.data.slice(-10)
       })
-      setChatErrorMessage("")
   }
 
   const onClickMessage = (e) => {
@@ -182,7 +159,7 @@ const ChatDialog = () => {
          <span onClick={onClickSuggestion}>Peux-tu m’expliquer mon dernier graphique ?</span>
         </div>
         </>
-    :<>Nous n'avons aucune données pour le moment info:{info.hasData}, activity:{activity.hasData}</>}
+    :<>Nous n&apos;avons aucune données pour le moment info:{info.hasData}, activity:{activity.hasData}</>}
       </div>
   </dialog>
   )

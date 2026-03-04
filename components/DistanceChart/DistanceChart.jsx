@@ -1,7 +1,7 @@
 'use client'
 
 import { useFetch } from '@/utils/hooks/useFetch'
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { RechartsDevtools } from '@recharts/devtools';
 import styles from './DistanceChart.module.css'
@@ -19,28 +19,34 @@ const emptyDataModel = () => [
 const DistanceChart = ({ initialDate, ...rest }) => {
   const [ chartData, setChartData ] = useState(emptyDataModel())
   const [ url, setUrl ] = useState(null)
-  const [ready, setReady] = useState(false)
   const [firstDate, setFirstDate] = useState(null)
-  const { data, isLoading, error } = useFetch(url)
-  const [errorMessage, setErrorMessage] = useState("")
+  const { data, isLoading, error, hasData } = useFetch(url)
 
   const dayStep = 7 * 4;
 
   const moyenne = () => Math.round(chartData.reduce((acc, v) => acc + v.km, 0) / chartData.length);
 
-  useEffect(()=>{
-    if(isLoading == false)
-    {
-      if(error == true)
-      {
-        const message = (data.message ?? data.toString())
-        setErrorMessage(message)
-        return;
-      }
-            
-      setReady(true)
+  const errorMessage = useMemo(() => {
+    if (!isLoading && error) {
+      return data?.message ?? data?.toString()
     }
-  }, [isLoading])
+    if(hasData)
+    {
+      if(data.length == 0)
+      {
+        return "Aucune donnée disponible"
+      }
+    }
+    return null
+  }, [isLoading, error, hasData, data])
+
+  const ready = useMemo(() => {
+    if (!isLoading && !error && hasData && data.length > 0) {
+      return true
+    }
+    return false
+  }, [isLoading, error, hasData, data])
+
 
   // obtient l'indice de la semaine entre la date de départ et la date de fin
   function weekIndice(date1, date2) {
@@ -53,13 +59,6 @@ const DistanceChart = ({ initialDate, ...rest }) => {
     if(ready == false)
       return
   
-    if(data.length == 0)
-    {
-      setErrorMessage("Aucune donnée disponible")
-      setReady(false)
-      return
-    }
-
     let ajustedData = emptyDataModel();
 
     for (let i = 0; i < data.length; i++) {
@@ -77,8 +76,6 @@ const DistanceChart = ({ initialDate, ...rest }) => {
   // useCallback est nécessaire pour éviter les re-render en chaine de DateSelector (et indirectement onDateChange)
   const onDateChange = useCallback((beginDate, endDate) => {
     const ajustedUrl = `user-activity?startWeek=${formatDateISO(beginDate)}&endWeek=${formatDateISO(endDate)}`
-    setErrorMessage(null)
-    setReady(false)
     setFirstDate(beginDate)
     setUrl(ajustedUrl)
   }, [])

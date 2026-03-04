@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useRef, useContext } from 'react';
+import { useEffect, useState, useRef, useContext, useMemo } from 'react';
 import styles from './PlanningPanel.module.css'
 import { HiOutlineArrowLeft   } from "react-icons/hi"
 import { useFetch, useFetchWithContent } from '@/utils/hooks/useFetch'
@@ -21,47 +21,41 @@ const PlanningPanel = () => {
   const dateRef = useRef(0)
   const [pageIndex, setPageIndex] = useState(0)
   // infos
-  const [errorMessage, setErrorMessage] = useState("")
   const info = useFetch("user-info")
   // data
   const [activityUrl, setActivityUrl] = useState(null)
   const activity = useFetch(activityUrl)
   // planning
   const [post, setPost] = useState(null)
-  const [planningErrorMessage, setPlanningErrorMessage] = useState("")
   const planning = useFetchWithContent("training-plan/generate", post, process.env.NEXT_PUBLIC_ASSIST_API_URL)
   // stats
   const [stats, setStats] = useState([])
 
+  const errorMessage = useMemo(() => {
+    if (!info.isLoading && info.error) {
+      return info.data?.message ?? info.data?.toString()
+    }
+    if (!activity.isLoading && activity.error) {
+      return activity.data?.message ?? activity.data?.toString()
+    }
+    return null
+  }, [info, activity])
+
+  const planningErrorMessage = useMemo(() => {
+    if (!planning.isLoading && planning.error) {
+      return planning.data?.message ?? planning.data?.toString()
+    }
+    return null
+  }, [planning])
+
 
   useEffect(()=>{
-    if(info.isLoading == false)
+    if(info.hasData)
     {
-      if(info.error == true)
-      {
-        const message = (info.data.message ?? info.data.toString())
-        setErrorMessage(message)
-        return;
-      }
-      
-      if(info.hasData == true)
-      {
-        setActivityUrl(`user-activity?startWeek=${info.data.profile.createdAt}&endWeek=${formatDateISO(new Date())}`)
-      }
+      setActivityUrl(`user-activity?startWeek=${info.data.profile.createdAt}&endWeek=${formatDateISO(new Date())}`)
     }
-  }, [info.isLoading])
+  }, [info.hasData])
 
-  useEffect(()=>{
-    if(activity.isLoading == false)
-    {
-      if(activity.error == true)
-      {
-        const message = (activity.data.message ?? info.data.toString())
-        setErrorMessage(message)
-        return;
-      }
-    }
-  }, [activity.isLoading])
 
   useEffect(()=>{
     if(activity.hasData)
@@ -102,18 +96,6 @@ const PlanningPanel = () => {
   }, [activity.hasData])
 
   useEffect(()=>{
-    if(planning.isLoading == false)
-    {
-      if(planning.error == true)
-      {
-        const message = (planning.data.content !== undefined ? planning.data.content : planning.data.toString())
-        setPlanningErrorMessage(message)
-        return;
-      }
-    }
-  }, [planning.isLoading])
-
-  useEffect(()=>{
     if(planning.hasData)
     {
       if(planning.data.success === true){
@@ -124,7 +106,6 @@ const PlanningPanel = () => {
 
         document.querySelector("form").reset()
         setPageIndex(0)
-        
       }
     }
   }, [planning.hasData])
@@ -137,7 +118,6 @@ const PlanningPanel = () => {
         stats : stats.slice(-10),
         activity : activity.data.slice(-10)
       })
-      setPlanningErrorMessage("")
   }
 
   function checkCurrentPageValidity(){

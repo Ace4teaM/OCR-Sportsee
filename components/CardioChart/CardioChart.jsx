@@ -1,7 +1,7 @@
 'use client'
 
 import { useFetch } from '@/utils/hooks/useFetch'
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import styles from './CardioChart.module.css'
 import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
 import { RechartsDevtools } from '@recharts/devtools';
@@ -23,32 +23,36 @@ const CardioChart = ({ initialDate, ...rest }) => {
   const [ chartData, setChartData ] = useState(emptyDataModel())
   const [ moyenne, setMoyenne ] = useState(0)
   const [ url, setUrl ] = useState(null)
-  const [ready, setReady] = useState(false)
   const [firstDate, setFirstDate] = useState(null)
-  const { data, isLoading, error } = useFetch(url)
-  const [errorMessage, setErrorMessage] = useState("")
+  const { data, isLoading, error, hasData } = useFetch(url)
 
-  useEffect(()=>{
-    if(isLoading == false)
-    {
-      if(error == true)
-      {
-        const message = (data.message ?? data.toString())
-        setErrorMessage(message)
-        return;
-      }
-            
-      setReady(true)
+  const errorMessage = useMemo(() => {
+    if (!isLoading && error) {
+      return data?.message ?? data?.toString()
     }
-  }, [isLoading])
+    if(hasData)
+    {
+      if(data.length == 0)
+      {
+        return "Aucune donnée disponible"
+      }
+    }
+    return null
+  }, [isLoading, error, hasData, data])
+
+  const ready = useMemo(() => {
+    if (!isLoading && !error && hasData && data.length > 0) {
+      return true
+    }
+    return false
+  }, [isLoading, error, hasData, data])
+
 
   const dayStep = 7;
 
   // useCallback est nécessaire pour éviter les re-render en chaine de DateSelector (et indirectement onDateChange)
   const onDateChange = useCallback((beginDate, endDate) => {
     const ajustedUrl = `user-activity?startWeek=${formatDateISO(beginDate)}&endWeek=${formatDateISO(endDate)}`
-    setErrorMessage(null)
-    setReady(false)
     setFirstDate(beginDate)
     setUrl(ajustedUrl)
   }, [])
@@ -66,13 +70,6 @@ const CardioChart = ({ initialDate, ...rest }) => {
     if(ready == false)
       return
   
-    if(data.length == 0)
-    {
-      setErrorMessage("Aucune donnée disponible")
-      setReady(false)
-      return
-    }
-
     let ajustedData = emptyDataModel();
 
     let totalAverage = 0

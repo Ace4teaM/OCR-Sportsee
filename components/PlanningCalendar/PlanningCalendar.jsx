@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useRef, useContext } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import styles from './PlanningCalendar.module.css'
 import { HiPlus, HiMiniMinus  } from "react-icons/hi2"
 import { getWeekNumber, formatDateDay } from "@/utils/functions/format.js"
@@ -13,19 +13,19 @@ const PlanningCalendar = ({data}) => {
   const [grouped, setGrouped] = useState({})
   // download
   const [post, setPost] = useState(null)
-  const [downloadErrorMessage, setDownloadErrorMessage] = useState("")
   const download = useFetchWithContent("training-plan/make-ics", post, process.env.NEXT_PUBLIC_ASSIST_API_URL)
 
-  useEffect(()=>{
-    if(download.isLoading == false)
-    {
-      if(download.error == true)
-      {
-        setDownloadErrorMessage(download.data.toString())
-        return;
-      }
+  const downloadErrorMessage = useMemo(() => {
+    if (!download.isLoading && download.error) {
+      return download.data?.message ?? download.data?.toString()
     }
-  }, [download.isLoading])
+    if(data === null || data === undefined)
+    {
+      return "Impossible de télécharger le planning : données manquantes."
+    }
+    return null
+  }, [download, data])
+
 
   useEffect(()=>{
     if(download.hasData)
@@ -69,10 +69,7 @@ const PlanningCalendar = ({data}) => {
 
   const onClickDownload = () => {
     if(data === null || data === undefined)
-    {
-      setDownloadErrorMessage("Impossible de télécharger le planning : données manquantes.")
       return;
-    }
 
     setPost([...data])
   }
@@ -104,6 +101,7 @@ const PlanningCalendar = ({data}) => {
           ))}
         </div>
        ))}
+       {downloadErrorMessage && <div className={styles.error}>{downloadErrorMessage}</div>}
        <div className={styles.buttons}>
         <button className={styles.button} onClick={()=>onClickDownload()}>Télécharger</button>
         <button className={styles.button} onClick={()=>onClickRegenerate()}>Regénérer un programme</button>

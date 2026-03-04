@@ -2,28 +2,20 @@
 
 import styles from "./page.module.css";
 import { useFetch } from '@/utils/hooks/useFetch'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import LoadingIcon from "@/components/LoadingIcon/LoadingIcon";
 import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import { formatHeight, formatDate, formatGenre, hour, min } from "@/utils/functions/format.js"
 
 export default function Profil() {
   const info = useFetch("user-info")
-  const [errorMessage, setErrorMessage] = useState("")
 
-  useEffect(()=>{
-    if(info.isLoading == false)
-    {
-      if(info.error == true)
-      {
-        const message = (info.data.message ?? info.data.toString())
-        console.log("error", message)
-        setErrorMessage(message)
-        return;
-      }
+  const errorMessage = useMemo(() => {
+    if (!info.isLoading && info.error) {
+      return info.data?.message ?? info.data?.toString()
     }
-  }, [info.isLoading])
-
+    return null
+  }, [info])
 
   return (
     info.isLoading === true ? <LoadingIcon></LoadingIcon> : errorMessage ? <ErrorMessage>{errorMessage}</ErrorMessage> : info.hasData ?

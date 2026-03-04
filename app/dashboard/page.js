@@ -2,7 +2,7 @@
 
 import styles from "./page.module.css";
 import { useFetch } from '@/utils/hooks/useFetch'
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import LoadingIcon from "@/components/LoadingIcon/LoadingIcon";
 import CardioChart from "@/components/CardioChart/CardioChart";
 import DistanceChart from "@/components/DistanceChart/DistanceChart";
@@ -10,13 +10,11 @@ import CoursesChart from "@/components/CoursesChart/CoursesChart";
 import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import Placeholder from '@/components/Placeholder/Placeholder'
 import PlanningPanel from '@/components/PlanningPanel/PlanningPanel'
-import PlanningCalendar from '@/components/PlanningCalendar/PlanningCalendar'
 import { formatDate, formatDateShort, formatDateISO } from "@/utils/functions/format.js"
 
 export default function DashBoard() {
   // infos
   const info = useFetch("user-info")
-  const [errorMessage, setErrorMessage] = useState("")
   // stats semaine
   const [ url, setUrl ] = useState(null)
   const week = useFetch(url)
@@ -24,6 +22,13 @@ export default function DashBoard() {
   const [endDate, setEndDate] = useState(null)
   const [totalActivity, setTotalActivity] = useState(0)
   const [totalDistance, setTotalDistance] = useState(0)
+
+  const errorMessage = useMemo(() => {
+    if (!info.isLoading && info.error) {
+      return info.data?.message ?? info.data?.toString()
+    }
+    return null
+  }, [info])
 
   // false si l'initialisation n'a pas encore eu lieu
   const didInit = useRef(false)
@@ -50,22 +55,6 @@ export default function DashBoard() {
     const ajustedUrl = `user-activity?startWeek=${formatDateISO(adjustedBegin)}&endWeek=${formatDateISO(adjustedEnd)}`
     setUrl(ajustedUrl)
   }, [])
-
-  /*
-  Infos DATA
-  */
-
-  useEffect(()=>{
-        if(info.isLoading == false)
-        {
-          if(info.error == true)
-          {
-            const message = (info.data.message ?? info.data.toString())
-            setErrorMessage(message)
-            return;
-          }
-        }
-  }, [info.isLoading])
 
   /*
   Week DATA

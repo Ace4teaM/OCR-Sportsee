@@ -27,17 +27,6 @@ const DateSelector = ({initialDate, onChange, dayStep}) => {
   })
   const [endDate, setEndDate] = useState(null)
 
-  // false si l'initialisation n'a pas encore eu lieu
-  const didInit = useRef(false)
-
-  useEffect(() => {
-    if (didInit.current) return
-    didInit.current = true
-
-    // Ajustement premier rendu uniquement
-    dateAdjust()
-  }, [])
-
   /// Ajuste la date pour correspondre du dimanche au dimanche
   const dateAdjust = () => {
     const adjustedBegin = new Date(beginDate)
@@ -59,6 +48,17 @@ const DateSelector = ({initialDate, onChange, dayStep}) => {
     setBeginDate(adjustedBegin)
     setEndDate(adjustedEnd)
   }
+
+  // false si l'initialisation n'a pas encore eu lieu
+  const didInit = useRef(false)
+
+  useEffect(() => {
+    if (didInit.current) return
+    didInit.current = true
+
+    // Ajustement premier rendu uniquement
+    dateAdjust()
+  }, [])
 
   const onPrevDate = () =>{
     const adjustedBegin = new Date(beginDate)

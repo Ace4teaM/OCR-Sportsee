@@ -6,7 +6,7 @@ export default function Home() {
     <div className={styles.page}>
       <main className={styles.main}>
         <p>La page demandée est introuvable.</p>
-        <Link href="/">Retour à l'accueil</Link>
+        <Link href="/">Retour à l&apos;accueil</Link>
       </main>
     </div>
   );

@@ -23,7 +23,7 @@ const ErrorMessage = ({children}) => {
       <div className={styles.container}>
         <div className={styles.message}>
           {isAuthenticationFailed && <>
-            <h2>Vous n'êtes pas authentifiez veuillez saisir vos identifiant</h2>
+            <h2>Vous n&apos;êtes pas authentifiez veuillez saisir vos identifiant</h2>
             <p>Veuillez vous authentifier <Link className={styles.link} href="#" onClick={onLogin}>Cliquez ici</Link></p>
           </>
           }

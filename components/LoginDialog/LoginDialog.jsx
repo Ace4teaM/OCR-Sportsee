@@ -93,7 +93,7 @@ const LoginDialog = () => {
             {loginFailed && <>La connexion a échouée</>}
             <p>Se connecter</p>
             <form onSubmit={onSubmit}>
-              <label htmlFor="username">Nom d'utilisateur</label>
+              <label htmlFor="username">Nom d&apos;utilisateur</label>
               <input type="text" name="username" />
               <label htmlFor="password">Mot de passe</label>
               <input type="password" name="password" />
@@ -104,7 +104,7 @@ const LoginDialog = () => {
         </div>
         <div className={styles.panel}>
             <img className={styles.background} src="/background.png" alt="background"></img>
-            <div className={styles.note}>Analysez vos performances en un clin d’œil, suivez vos progrès et atteignez vos objectifs.</div>
+            <div className={styles.note}>Analysez vos performances en un clin d&apos;œil, suivez vos progrès et atteignez vos objectifs.</div>
         </div>
       </div>
   </dialog>
