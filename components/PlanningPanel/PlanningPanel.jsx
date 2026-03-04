@@ -8,6 +8,7 @@ import LoadingIcon from "@/components/LoadingIcon/LoadingIcon";
 import { formatDateISO } from "@/utils/functions/format.js"
 import ContextInstance from "@/utils/context/ContextInstance/ContextInstance"
 import ReactMarkdown from 'react-markdown'
+import { getWeekNumber, formatDateDay } from "@/utils/functions/format.js"
 
 const PlanningPanel = () => {
   const { setPlanning } = useContext(ContextInstance)
@@ -29,6 +30,8 @@ const PlanningPanel = () => {
   const [post, setPost] = useState(null)
   const [planningErrorMessage, setPlanningErrorMessage] = useState("")
   const planning = useFetchWithContent("training-plan/generate", post, process.env.NEXT_PUBLIC_ASSIST_API_URL)
+  // stats
+  const [stats, setStats] = useState([])
 
 
   useEffect(()=>{
@@ -59,6 +62,44 @@ const PlanningPanel = () => {
       }
     }
   }, [activity.isLoading])
+
+  useEffect(()=>{
+    if(activity.hasData)
+    {
+      // groupe les données par semaine
+      const groupedData = {};
+      activity.data.forEach(item => {
+        const date = new Date(item.date)
+        const week = date.getFullYear() + "." + getWeekNumber(date)
+        if (!groupedData[week]) {
+          groupedData[week] = [];
+        }
+        groupedData[week].push(item);
+      });
+
+      // Analysez l'historique des courses pour détecter le niveau réel
+      // Calculez les allures cibles basées sur les performances récentes
+      // Intégrez les objectifs à long terme dans la stratégie du plan
+      // > distance moyenne par semaine
+      // > durée moyenne par semaine
+      // > jours par semaine
+      // > calories brulées en moyenne par semaine
+      
+      const averageData = {};
+      for (const [weekKey, week] of Object.entries(groupedData)) {
+        averageData[weekKey] = {
+          weekOfYear: weekKey,
+          distance: Math.round(week.reduce((prev,cur) => prev + cur.distance, 0) / week.length),
+          duration: Math.round(week.reduce((prev,cur) => prev + cur.duration, 0) / week.length),
+          days: week.length,
+          daysOfWeek: week.reduce((prev,cur) => prev + formatDateDay(cur.date) + ", ", ""),
+          caloriesBurned: Math.round(week.reduce((prev,cur) => prev + cur.caloriesBurned, 0) / week.length),
+        }
+      }
+
+      setStats(Object.values(averageData))
+    }
+  }, [activity.hasData])
 
   useEffect(()=>{
     if(planning.isLoading == false)
@@ -93,6 +134,7 @@ const PlanningPanel = () => {
         objectif : data.objectif.trim(),
         date : data.date,
         info : info.data,
+        stats : stats.slice(-10),
         activity : activity.data.slice(-10)
       })
       setPlanningErrorMessage("")

@@ -7,7 +7,21 @@ import Joi from "joi"
 const schema = Joi.object({
   objectif: Joi.string().required(),
   info: Joi.object().required(),
-  activity: Joi.array().required(),
+  stats: Joi.array().items(Joi.object({
+    weekOfYear: Joi.string().required(),
+    distance: Joi.number().required(),
+    duration: Joi.number().required(),
+    days: Joi.number().required(),
+    daysOfWeek: Joi.string().required(),
+    caloriesBurned: Joi.number().required()
+  })).required(),
+  activity: Joi.array().items(Joi.object({
+      caloriesBurned: Joi.number().required(),
+      date: Joi.date().required(),
+      distance: Joi.number().required(),
+      duration: Joi.number().required(),
+      heartRate: Joi.object({ min: Joi.number(), max: Joi.number(), average: Joi.number() }).required()
+  })).required(),
   date: Joi.date().required()
 })
 
@@ -41,6 +55,12 @@ export async function POST(request) {
       return new Response(error.details[0].message, { status: 500 }) // retourne le premier message d'erreur
     }
 
+    const daysOfWeek = [...new Set(
+        body.stats.reduce((prev,cur) => prev + cur.daysOfWeek + ",", "").replaceAll(" ","")
+        .split(',')
+        .filter(v => v.trim() !== '')
+    )].join(',');
+
     const apiKey = process.env.MISTRAL_API_KEY
     const pathname = "/v1/chat/completions"
     const proxyURL = new URL(pathname, 'https://api.mistral.ai')
@@ -72,8 +92,31 @@ export async function POST(request) {
         content : `Voici quelques informations sur ton élève: ${body.info.profile.genre === "female" ? "une femme" : "un homme"} qui s'appelle ${body.info.profile.firstName} de ${body.info.profile.age} ans et ${body.info.profile.weight} kg, elle mesure ${body.info.profile.height} cm et est inscrit depuis le ${body.info.profile.createdAt}`
       },
       {
+        role : "system",
+        content : `Voici les données d'entraînement pour les 10 dernières courses:\n` +
+                "caloriesBurned: Calories brulés en kilocalories\n" + 
+                "date: Date de l'entrainement\n" + 
+                "distance: Distance parcourue en km\n" + 
+                "duration: Durée en minutes\n" + 
+                "heartRate: Min/Max/Moyenne du rythme cardiaque\n" + 
+                JSON.stringify(body.activity)
+      },
+      {
+        role : "system",
+        content : `Voici les données d'entraînement pour les 10 dernières semaines:\n` +
+                "weekOfYear: Année et numéro de la semaine (ex: 2024.1)\n" + 
+                "distance: Distance parcourue en moyenne dans la semaine\n" + 
+                "duration: Durée d'entraînement en moyenne dans la semaine\n" + 
+                "days: Nombre de jours d'entraînement dans la semaine\n" + 
+                "daysOfWeek: Jours d'activités dans la semaine\n" + 
+                "caloriesBurned: Calories brulés en moyenne par semaine\n" +
+                JSON.stringify(body.stats)
+      },
+      {
         role : "user",
-        content : `Bonjour coach, voici mon objectif: ${body.objectif}\nPeux-tu me générer un programme d'entraînement personnalisé pour atteindre cet objectif en prenant en compte mes données et mes contraintes ?`
+        content : `Mes jours de disponibilités sont ${daysOfWeek}\n` +
+                  `Voici mon objectif: ${body.objectif}\n` +
+                  `Peux-tu me générer un programme d'entraînement personnalisé pour atteindre cet objectif en prenant en compte mes données et mes contraintes ?`
       }
     ]
 
@@ -102,7 +145,6 @@ export async function POST(request) {
     {
       throw new Error("Unexpected response format from IA API")
     }
-    console.log(proxyBody.choices[0].message)
 
     // test le format de la réponse de l'ia, si elle n'est pas au format attendu, on considère que c'est une erreur
     let iaMessage;
@@ -124,9 +166,9 @@ export async function POST(request) {
       throw new Error("Error from IA API : " + proxyResponse.status)
     }
 
-    const { respError, respValue } = responseSchema.validate(iaMessage)
-    if (respError) {
-      throw new Error({ success: false, response: iaMessage })
+    const responseValidation = responseSchema.validate(iaMessage)
+    if (responseValidation.error !== undefined) {
+      throw new Error(iaMessage)
     }
 
     return Response.json({ success: true, response: iaMessage })

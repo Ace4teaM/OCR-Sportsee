@@ -69,7 +69,13 @@ export async function POST(request) {
       },
       {
         role : "user",
-        content : `Très bien, voici mes données d'entraînement pour les 10 dernières courses:\n` + JSON.stringify(body.activity)
+        content : `Très bien, voici mes données d'entraînement pour les 10 dernières courses:\n` +
+                "caloriesBurned: Calories brulés en kilocalories\n" + 
+                "date: Date de l'entrainement\n" + 
+                "distance: Distance parcourue en km\n" + 
+                "duration: Durée en minutes\n" + 
+                "heartRate: Min/Max/Moyenne du rythme cardiaque\n" + 
+                JSON.stringify(body.activity)
       }
     ]
 
