@@ -11,13 +11,19 @@ const schema = Joi.object({
   date: Joi.date().required()
 })
 
+
+// { program: [ { day: date, duration: integer, description: string, intensity: string, objectif: string, advice: string }, ... ] }
 const responseSchema = Joi.object({
-  day: Joi.date().iso().required(),
-  duration: Joi.number().required().min(5).max(336), // Durée de l'entraînement en minutes (max 2 semaines)
-  description: Joi.string().required(),
-  intensity: Joi.string().required(),
-  objectif: Joi.string().required(),
-  advice: Joi.string().optional()
+  program: Joi.array().items(
+    Joi.object({
+      day: Joi.date().iso().required(),
+      duration: Joi.number().required().min(5),
+      description: Joi.string().required(),
+      intensity: Joi.string().required(),
+      objectif: Joi.string().required(),
+      advice: Joi.string().optional()
+    })
+  ).required()
 }).required()
 
 export async function POST(request) {
@@ -112,7 +118,7 @@ export async function POST(request) {
       throw new Error(proxyBody.choices[0].message.content)
     }
 
-    // test le status de la réponse de l'ia, si ce n'est pas 200, on considère que c'est une erreur
+    // test le status de la réponse, si ce n'est pas 200, on considère que c'est une erreur
     if(proxyResponse.status != 200)
     {
       throw new Error("Error from IA API : " + proxyResponse.status)

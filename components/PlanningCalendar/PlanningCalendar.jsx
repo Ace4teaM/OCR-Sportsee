@@ -1,13 +1,38 @@
 "use client"
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useContext } from 'react';
 import styles from './PlanningCalendar.module.css'
 import { HiPlus, HiMiniMinus  } from "react-icons/hi2"
 import { getWeekNumber, formatDateDay } from "@/utils/functions/format.js"
+import { downloadFile } from "@/utils/functions/utils.js"
+import ContextInstance from "@/utils/context/ContextInstance/ContextInstance"
+import { useFetchWithContent } from '@/utils/hooks/useFetch'
 
 const PlanningCalendar = ({data}) => {
   const [showIndex, setShowIndex] = useState(0)
   const [grouped, setGrouped] = useState({})
+  // download
+  const [post, setPost] = useState(null)
+  const [downloadErrorMessage, setDownloadErrorMessage] = useState("")
+  const download = useFetchWithContent("training-plan/make-ics", post, process.env.NEXT_PUBLIC_ASSIST_API_URL)
+
+  useEffect(()=>{
+    if(download.isLoading == false)
+    {
+      if(download.error == true)
+      {
+        setDownloadErrorMessage(download.data.toString())
+        return;
+      }
+    }
+  }, [download.isLoading])
+
+  useEffect(()=>{
+    if(download.hasData)
+    {
+      downloadFile("training_plan.ics", download.data, "text/calendar")
+    }
+  }, [download.hasData])
 
   const didInit = useRef(0)
 
@@ -43,6 +68,13 @@ const PlanningCalendar = ({data}) => {
   }, [data])
 
   const onClickDownload = () => {
+    if(data === null || data === undefined)
+    {
+      setDownloadErrorMessage("Impossible de télécharger le planning : données manquantes.")
+      return;
+    }
+
+    setPost([...data])
   }
 
   const onClickRegenerate = () => {

@@ -100,6 +100,7 @@ export function useFetchWithContent(url, post, domain = process.env.NEXT_PUBLIC_
                 setLoading(false)
             }
         }
+            console.log("useFetchWithContent",isReady,url,post,isReady && url && post)
         if (isReady && url && post) {
             console.log("loading",url,"with",post)
             setLoading(true)
